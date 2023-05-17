@@ -1,5 +1,5 @@
 # ezPaint
-A simple program that allows for easy weightpainting of models from SW:TOR, Jedi Knight II, Jedi Academy, and Destiny 2. BFII support coming soon!
+A simple program that allows for easy weightpainting of models from SW:TOR, Jedi Knight II, Jedi Academy, and Destiny 2. BFII and J:S support coming soon!
 After the weightpaint and export, you will need to compile the model using an adapted skeleton and the "Proportion Trick."
 # Video 1
 https://www.youtube.com/watch?v=n9lmxpjSv0I
