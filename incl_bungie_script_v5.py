@@ -3,7 +3,7 @@ import math
 
 swtor = False  # Star Wars: The Old Republic
 bungie_smalldef = False  # Destiny 2
-jka = False  # Star Wars: Jedi Knight Academy 2
+jka = False  # Star Wars: Jedi Knight II and Jedi Kinght III (Academy)
 swjs = False  # Star Wars: Jedi Series (Jedi Fallen Order and Jedi Surivor)
 swbf = True  # Star Wars Battlefront Series (EA Battlefront 1 and Battlefront 2)
 
