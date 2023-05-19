@@ -1,13 +1,13 @@
 # ----------------
 # ezPaint Blender addon
-# UI and original program created by FallenLogic, 2023 updates and multi-game support thanks to NadaYukie
+# Created in 2022 by FallenLogic, 2023 updates thanks to NadaYukie
 # ----------------
 
 bl_info = {
     'name': 'ezPaint',
     'description': 'Automatically weightpaint models from a variety of games for use with the Source Engine',
     'author': 'FallenLogic (original author), NadaYukie (Adding support for many games)',
-    'version': (0, 13),
+    'version': (0, 18),
     'blender': (2, 80, 0),
     'location': 'Search Menu (Object Mode) | ezPaint',
     'warning': "Requires other addons to import and export models (see documentation)",
@@ -2675,6 +2675,7 @@ bungie_smalldef = False  # Destiny 2
 jka = False  # Star Wars: Jedi Knight II and Jedi Kinght III (Academy)
 swjs = False  # Star Wars: Jedi Series (Jedi Fallen Order and Jedi Surivor)
 swbf = False  # Star Wars Battlefront Series (EA Battlefront 1 and Battlefront 2)
+custom = False # Custom vertex group mapping file
 
 class EZPAINT_OT_ReweightModel(bpy.types.Operator):
 
@@ -2685,8 +2686,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
     
     def execute(self, context):
         
-        selected_game = bpy.context.preferences.addons["object_ezpaint"].preferences.game_type
-        
+        selected_game = bpy.context.scene.ezpaint_opts.game_type        
         
         if selected_game == 'SWTOR':
             print('SW:TOR MODE')
@@ -2695,6 +2695,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             jka = False
             swjs = False
             swbf = False
+            custom = False
         if selected_game == 'DEST2':
             print('DESTINY 2 MODE')
             swtor = False
@@ -2702,6 +2703,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             jka = False
             swjs = False
             swbf = False
+            custom = False
         if selected_game == 'JKA':
             print('JEDI KNIGHT MODE')
             swtor = False
@@ -2709,6 +2711,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             jka = True
             swjs = False
             swbf = False
+            custom = False
         if selected_game == 'SWJS':
             print('JEDI SERIES MODE')
             swtor = False
@@ -2716,6 +2719,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             jka = False
             swjs = True
             swbf = False
+            custom = False
         if selected_game == 'BFII':
             print('BATTLEFRONT MODE')
             swtor = False
@@ -2723,6 +2727,15 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             jka = False
             swjs = False
             swbf = True
+            custom = False
+        if selected_game == 'CUSTOM':
+            print('CUSTOM MODE')
+            swtor = False
+            bungie_smalldef = False
+            jka = False
+            swjs = False
+            swbf = False
+            custom = True
         
         act_obj = context.active_object
         v_groups = act_obj.vertex_groups
@@ -2778,7 +2791,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             prefix = act_obj.name[:3]
             prefixes = ('bms','bmf','bmn','bma','bfn','bfs')
             
-            has_swtor_skels = bpy.context.preferences.addons["object_ezpaint"].preferences.has_swtor_skels
+            has_swtor_skels = bpy.context.scene.ezpaint_opts.has_swtor_skels
             if has_swtor_skels:
                 if prefix in prefixes:
                     skeleton = act_obj.modifiers.new(name="Armature", type="ARMATURE")
@@ -2799,7 +2812,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             merge_groups(swtor_hip_left, "lhip", act_obj)
             merge_groups(swtor_hip_right, "rhip", act_obj)
             
-            fix_swtor_matnames = bpy.context.preferences.addons["object_ezpaint"].preferences.fix_swtor_matnames
+            fix_swtor_matnames = bpy.context.scene.ezpaint_opts.fix_swtor_matnames
             
             if fix_swtor_matnames: 
                 # This prevents duplicate material names, which Source does not support
@@ -2839,7 +2852,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
 
         def swjs_fixups(act_obj):
             #TODO: rewrite this to make more sense
-            fbx_mode = bpy.context.preferences.addons["object_ezpaint"].preferences.fbx_mode
+            fbx_mode = bpy.context.scene.ezpaint_opts.fbx_mode
             if fbx_mode:
                 #Used only for models from common SWJS FBX archives
                 act_obj.scale = (0.38, 0.38, 0.38)
@@ -2920,12 +2933,63 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             merge_groups(swbf_toe_left, "ltoe", act_obj)
             merge_groups(swbf_toe_right, "rtoe", act_obj)
 
-
         def reweight(v_groups, name_list):
             for n in name_list:
                 if n[0] in v_groups:
                     v_groups[n[0]].name = n[1]
+        
+        def custom_fixups(act_obj):
+            input_file = bpy.path.abspath(bpy.context.scene.ezpaint_opts.custom_v_filepath)
+            groups_to_merge = []
+            temp_group = []
 
+            vertex_groups_replacement_list = []
+
+            in_merge_area = False
+            in_vertex_area = False
+
+            with open(input_file, 'r') as fin:
+                lines = fin.readlines()
+                scale = float(lines[0])
+                for i in range(len(lines)):
+                    line = lines[i]
+                    if line.startswith('{'):
+                        in_merge_area = True
+                    if line.startswith('}'):
+                        temp_group.append(line[:-1])
+                        temp_group.append(lines[i + 1])
+                        in_merge_area = False
+                    if in_merge_area:
+                        temp_group.append(line[:-1])  # Removes newline
+                    else:
+                        groups_to_merge.append(temp_group)
+                        temp_group = []
+                    if line.startswith('['):
+                        in_vertex_area = True
+                    if line.startswith(']'):
+                        in_vertex_area = False
+                    if in_vertex_area:
+                        if not '[' in line and not ']' in line:
+                            line = line[:-1]
+                            vertex_groups_replacement_list.append(line.split(':'))
+
+            print(scale)
+            print(vertex_groups_replacement_list)
+
+            raw_group = []
+            for g in groups_to_merge:
+                if len(g):
+                    final_name = g[-1].strip()
+                    for k in g:
+                        if '{' not in k and '}' not in k and final_name not in k:
+                            raw_group.append(k.strip())
+                    print(raw_group)
+                    merge_groups(raw_group, final_name, act_obj)
+                    print(final_name)
+                raw_group = []
+
+            act_obj.scale = (scale,scale,scale)
+            reweight(v_groups, vertex_groups_replacement_list)
 
         if swtor == True:
             swtor_fixups(act_obj)
@@ -2943,6 +3007,9 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
         elif swbf == True:
             swbf_fixups(act_obj)
             reweight(v_groups, swbf_name_list)
+        elif custom:
+            custom_fixups(act_obj)
+            #reweight(v_groups, custom_name_list)
 
         return {'FINISHED'}
 
@@ -2961,7 +3028,11 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
         col.label(text='  ONLY the active object will be processed.')
 
 class EZPAINT_Settings(PropertyGroup):
-    games = [('SWTOR','SW:TOR','Star Wars: The Old Republic'),('JKA','JK:JA/II','Jedi Knight Series (Academy & II)'),('SWJS','SW:JS/JFO','Star Wars: Jedi Series (Survivor & Fallen Order)'),('BFII','BF/II','Star Wars Battlefront & Battlefront II'),("DEST2","Destiny 2","Destiny 2 - Only supports small characters for now")]
+    games = [('SWTOR','SW:TOR','Star Wars: The Old Republic'),('JKA','JK:JA/II','Jedi Knight Series (Academy & II)'),
+    ('SWJS','SW:JS/JFO','Star Wars: Jedi Series (Survivor & Fallen Order)'),
+    ('BFII','BF/II','Star Wars Battlefront & Battlefront II'),
+    ("DEST2","Destiny 2","Destiny 2 - Only supports small characters for now"),
+    ('CUSTOM','Use Custom Settings','Load custom vertex groups and fixups from a file')]
     
     fbx_mode: BoolProperty(
         name='FBX Mode (only for SW:JS meshes)',
