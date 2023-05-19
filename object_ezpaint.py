@@ -9,7 +9,7 @@ bl_info = {
     'author': 'FallenLogic (original author), NadaYukie (Adding support for many games)',
     'version': (0, 13),
     'blender': (2, 80, 0),
-    'location': 'Space Menu (Object Mode) | ezPaint',
+    'location': 'Search Menu (Object Mode) | ezPaint',
     'warning': "Requires other addons to import and export models (see documentation)",
     'wiki_url': 'https://github.com/FallenLogic/ezPaint',
     "tracker_url": "https://github.com/FallenLogic/ezPaint/issues",
@@ -3008,9 +3008,14 @@ classes = (
     EZPAINT_OT_ReweightModel
 )
 
+def menu_func(self, context): #This just adds the menu
+    self.layout.operator(EZPAINT_OT_ReweightModel.bl_idname)
+
+
 def register():
     for c in classes:
         bpy.utils.register_class(c)
+    bpy.types.VIEW3D_MT_object.prepend(menu_func)  # Adds the new operator to an existing menu.
 
 def unregister():
     for c in reversed(classes):
