@@ -19,7 +19,7 @@ bl_info = {
 import bpy
 import math
 from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty, PointerProperty, StringProperty
-
+from bpy.types import PropertyGroup
 
 swtor_name_list = [
     # old vertex group name - new vertex group name
@@ -2685,11 +2685,6 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
     
     def execute(self, context):
         
-        #games = [('SWTOR','SW:TOR','Star Wars: The Old Republic'),
-        #('JKA','JK:JA/II','Jedi Knight Series (Academy & II)'),
-        #('SWJS','SW:JS/JFO','Star Wars: Jedi Series (Survivor & Fallen Order)'),
-        #('BFII','BF/II','Star Wars Battlefront & Battlefront II'),
-        #("DEST2","Destiny 2","Destiny 2 - Only supports small characters for now")]
         selected_game = bpy.context.preferences.addons["object_ezpaint"].preferences.game_type
         
         
@@ -2965,11 +2960,9 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
         col.label(text='  Processing can take several seconds!')
         col.label(text='  ONLY the active object will be processed.')
 
-
-class EZPAINT_AddonPreferences(bpy.types.AddonPreferences):
-    bl_idname = __name__
+class EZPAINT_Settings(PropertyGroup):
     games = [('SWTOR','SW:TOR','Star Wars: The Old Republic'),('JKA','JK:JA/II','Jedi Knight Series (Academy & II)'),('SWJS','SW:JS/JFO','Star Wars: Jedi Series (Survivor & Fallen Order)'),('BFII','BF/II','Star Wars Battlefront & Battlefront II'),("DEST2","Destiny 2","Destiny 2 - Only supports small characters for now")]
-
+    
     fbx_mode: BoolProperty(
         name='FBX Mode (only for SW:JS meshes)',
         description='Use FBX mode/scaling for Jedi Series',
@@ -2994,33 +2987,70 @@ class EZPAINT_AddonPreferences(bpy.types.AddonPreferences):
         description='Game that the imported mesh is from',
         default='SWTOR'
     )
+    
+    custom_v_filepath : StringProperty(
+            name = 'Custom Vertex Groups',
+            subtype = 'FILE_PATH',
+            description = 'File that defines a custom vertex group mapping'
+    )
+
+class EZPAINT_AddonPreferences(bpy.types.AddonPreferences):
+    bl_idname = __name__
 
     def draw(self, context):
         layout = self.layout
+        scene = context.scene
+        ezp_opts = scene.ezpaint_opts
         col = layout.column()
-        col.prop(self, 'fbx_mode')
-        col.prop(self, 'has_swtor_skels')
-        col.prop(self, 'fix_swtor_matnames')
-        col.prop(self, 'game_type')
+        col.prop(ezp_opts, 'fbx_mode')
+        col.prop(ezp_opts, 'has_swtor_skels')
+        col.prop(ezp_opts, 'fix_swtor_matnames')
+        col.prop(ezp_opts, 'game_type')
+        col.prop(ezp_opts, 'custom_v_filepath')
+        
+class EZP_PT_options_panel(bpy.types.Panel):
+    bl_label = "ezPaint Options"
+    bl_idname = "VIEW3D_PT_ezp_settings"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "ezPaint"
+    
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        ezp_opts = scene.ezpaint_opts
+        
+        layout.operator(EZPAINT_OT_ReweightModel.bl_idname, icon = 'MESH_DATA')               
+        layout.separator()
+        
+        layout.prop(ezp_opts, 'fbx_mode')
+        layout.prop(ezp_opts, 'has_swtor_skels')
+        layout.prop(ezp_opts, 'fix_swtor_matnames')
+        layout.prop(ezp_opts, 'game_type')
+        layout.prop(ezp_opts, 'custom_v_filepath')
+
 
 classes = (
+    EZPAINT_Settings,
     EZPAINT_AddonPreferences,
-    EZPAINT_OT_ReweightModel
+    EZPAINT_OT_ReweightModel,
+    EZP_PT_options_panel
 )
 
-def menu_func(self, context): #This just adds the menu
-    self.layout.operator(EZPAINT_OT_ReweightModel.bl_idname)
-
+#def menu_func(self, context): #This just adds the menu
+#    self.layout.operator(EZPAINT_OT_ReweightModel.bl_idname)
 
 def register():
     for c in classes:
         bpy.utils.register_class(c)
-    bpy.types.VIEW3D_MT_object.prepend(menu_func)  # Adds the new operator to an existing menu.
+    #bpy.types.VIEW3D_MT_object.prepend(menu_func)  # Adds the new operator to an existing menu.
+    bpy.types.Scene.ezpaint_opts = PointerProperty(type=EZPAINT_Settings)
 
 def unregister():
     for c in reversed(classes):
         bpy.utils.unregister_class(c)
+    del bpy.types.Scene.ezpaint_opts
 
-# allows running addon from text editor
+# allows running add-on from builtin text editor
 if __name__ == '__main__':
     register()
