@@ -1,6 +1,6 @@
 # ----------------
 # ezPaint Blender addon
-# Created in 2022 by FallenLogic, 2023 updates thanks to NadaYukie
+# UI and original program created by FallenLogic, 2023 updates and multi-game support thanks to NadaYukie
 # ----------------
 
 bl_info = {
