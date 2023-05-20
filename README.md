@@ -3,8 +3,13 @@ A simple Blender add-on that allows for easy weightpainting of models from SW:TO
 After the automatic weightpaint, you will need to export as SMD, and compile the model using a proportioned skeleton.
 # How to Use:
 ## Step 1: Install as a Blender addon
-
-
+Edit -> Preferences -> Add-ons -> Install, then locate the object_ezpaint.py file.
+\nAlternatively, place the file in the root of your Blender addons folder. 
+## Step 2: Change settings
+These are available under Addon Preferences
+## Step 3: Activate addon from the sidebar 
+You may need to press 'N' or use the F3 menu to search for the operator
+## Step 4: Parent the mesh to a proportioned armature and export it
 ## Custom file demo:
 https://github.com/FallenLogic/ezPaint/assets/68028253/b829450d-d7ff-4a9a-b44c-827266778dad
 For a custom vertex group mapping file,
@@ -27,7 +32,7 @@ forearm2.L
 forearm3.L
 }
 forearm_group
-\[
+[
 pelvis:ValveBiped.Bip01_Pelvis
 lower_lumbar:ValveBiped.Bip01_Spine
 upper_lumbar:ValveBiped.Bip01_Spine1
