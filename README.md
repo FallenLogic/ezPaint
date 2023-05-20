@@ -13,7 +13,7 @@ The first line must be a number (this is converted to a float or int), and it is
 For vertex groups that should all be merged into one group, use curly braces (brackets) to contain a list of these groups, separated by newlines. The line following the closing bracket should be the name of the group to merge into.
 
 For vertex groups that should be reassigned to a ValveBiped vertex group, use square brackets, and a colon to separate the old group from the new group. For an example, see below:
-
+```
 10
 {
 thigh1.L
@@ -35,7 +35,7 @@ thoracic:ValveBiped.Bip01_Spine2
 hip_group:ValveBiped.Bip01_L_Thigh
 forearm_group:ValveBiped.Bip01_L_Forearm
 ]
-
+```
 Save this as a text file and use the options panel or addon preferences panel to load it.
 Note that the groups defined in the merge section can be used in the replace section.
 
