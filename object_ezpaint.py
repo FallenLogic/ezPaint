@@ -1,21 +1,7 @@
 # ----------------
-# ezPaint Blender addon
-# Created in 2022 by FallenLogic, 2023 updates thanks to NadaYukie
+# ezPaint Blender add-on
+# Created by FallenLogic & NadaYukie
 # ----------------
-
-bl_info = {
-    "name": "ezPaint",
-    "description": "Automatically weightpaint models from a variety of games for use with the Source Engine",
-    "author": "FallenLogic (original author), NadaYukie (Adding support for many games)",
-    "version": (0, 18),
-    "blender": (2, 80, 0),
-    "location": "Search Menu (Object Mode) | ezPaint",
-    "warning": "Requires other addons to import and export models (see documentation)",
-    "wiki_url": "https://github.com/FallenLogic/ezPaint",
-    "tracker_url": "https://github.com/FallenLogic/ezPaint/issues",
-    "category": "Object",
-}
-
 import bpy
 import math
 from bpy.props import (
@@ -27,6 +13,19 @@ from bpy.props import (
     StringProperty,
 )
 from bpy.types import PropertyGroup
+
+bl_info = {
+    "name": "ezPaint",
+    "description": "Automatically weightpaint models from a variety of games for use with the Source Engine",
+    "author": "FallenLogic (original author), NadaYukie (adding support for many games)",
+    "version": (0, 18),
+    "blender": (2, 80, 0),
+    "location": "Search Menu (Object Mode) | ezPaint",
+    "warning": "Requires other addons to import and export models (see documentation)",
+    "wiki_url": "https://github.com/FallenLogic/ezPaint",
+    "tracker_url": "https://github.com/FallenLogic/ezPaint/issues",
+    "category": "Object",
+}
 
 swtor_name_list = [
     # old vertex group name - new vertex group name
@@ -2582,90 +2581,15 @@ fortnite_ankle_right = {
 }
 
 
-swtor = True  # Star Wars: The Old Republic
-bungie_smalldef = False  # Destiny 2
-jka = False  # Star Wars: Jedi Knight II and Jedi Kinght III (Academy)
-swjs = False  # Star Wars: Jedi Series (Jedi Fallen Order and Jedi Surivor)
-swbf = False  # Star Wars Battlefront Series (EA Battlefront 1 and Battlefront 2)
-fortnite = False  # Fortnite Battle Pass
-custom = False  # Custom vertex group mapping file
-
-
 class EZPAINT_OT_ReweightModel(bpy.types.Operator):
-
     bl_idname = "object.ezpaint_reweight"
     bl_label = "ezPaint | Automatic Weightpaint"
-    bl_description = (
-        "Automatically convert model weights to be used in the Source Engine"
-    )
+    bl_description = "Automatically convert model weights to be used in the Source Engine"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
 
         selected_game = bpy.context.scene.ezpaint_opts.game_type
-
-        if selected_game == "SWTOR":
-            print("SW:TOR MODE")
-            swtor = True
-            bungie_smalldef = False
-            jka = False
-            swjs = False
-            swbf = False
-            fortnite = False
-            custom = False
-        if selected_game == "DEST2":
-            print("DESTINY 2 MODE")
-            swtor = False
-            bungie_smalldef = True
-            jka = False
-            swjs = False
-            swbf = False
-            fortnite = False
-            custom = False
-        if selected_game == "JKA":
-            print("JEDI KNIGHT MODE")
-            swtor = False
-            bungie_smalldef = False
-            jka = True
-            swjs = False
-            swbf = False
-            fortnite = False
-            custom = False
-        if selected_game == "SWJS":
-            print("JEDI SERIES MODE")
-            swtor = False
-            bungie_smalldef = False
-            jka = False
-            swjs = True
-            swbf = False
-            custom = False
-        if selected_game == "BFII":
-            print("BATTLEFRONT MODE")
-            swtor = False
-            bungie_smalldef = False
-            jka = False
-            swjs = False
-            swbf = True
-            fortnite = False
-            custom = False
-        if selected_game == "FORTNITE":
-            print("FORTNITE MODE")
-            swtor = False
-            bungie_smalldef = False
-            jka = False
-            swjs = False
-            swbf = False
-            fortnite = True
-            custom = False
-        if selected_game == "CUSTOM":
-            print("CUSTOM MODE")
-            swtor = False
-            bungie_smalldef = False
-            jka = False
-            swjs = False
-            swbf = False
-            fortnite = False
-            custom = True
 
         act_obj = context.active_object
         v_groups = act_obj.vertex_groups
@@ -2681,9 +2605,9 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
 
             # general tests
             if (
-                len(group_candidates)
-                and act_obj.type == "MESH"
-                and bpy.context.mode == "OBJECT"
+                    len(group_candidates)
+                    and act_obj.type == "MESH"
+                    and bpy.context.mode == "OBJECT"
             ):
 
                 # iterate through the vertices and sum the weights per group
@@ -2707,7 +2631,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
 
                 # combine values into the group
                 for key, value in vertex_weights.items():
-                    vgroup.add([key], value, "REPLACE")  #'ADD','SUBTRACT', 'REPLACE'
+                    vgroup.add([key], value, "REPLACE")  # options are 'ADD','SUBTRACT', 'REPLACE'
 
                 # cleans up duplicates, adapted from https://blender.stackexchange.com/questions/134587/
                 vgs = [vg for vg in act_obj.vertex_groups if vg.name in group_input]
@@ -2770,7 +2694,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             for m in act_obj.material_slots:
                 new_mat = m.material.copy()
                 m.material = new_mat
-                new_mat.name = new_mat.name[15:-8]
+                new_mat.name = new_mat.name[15:-8]  # Slices the file extension off
 
         def bungie_smalldef_fixups(act_obj):
             act_obj.scale = (38, 38, 38)
@@ -2779,79 +2703,53 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             merge_groups(bungie_hand_l_groups, "bg_handlgroup", act_obj)
             merge_groups(bungie_hand_r_groups, "bg_handrgroup", act_obj)
 
+        def swjs_fixups_helper(act_obj):
+            merge_groups(SWJS_fc_bones, "headgroup", act_obj)
+            
+            merge_groups(SWJS_NeckA_bones, "neckagroup", act_obj)
+            
+            merge_groups(SWJS_NeckB_bones, "neckbgroup", act_obj)
+            
+            merge_groups(SWJS_Pelvis_bones, "pelivsgroup", act_obj)
+            
+            merge_groups(SWJS_Spine2_bones, "spine2group", act_obj)
+            
+            merge_groups(SWJS_hand_bones_right, "rhand", act_obj)
+            merge_groups(SWJS_hand_bones_left, "lhand", act_obj)
+            
+            merge_groups(SWJS_forearm_bones_right, "rforearm", act_obj)
+            merge_groups(SWJS_forearm_bones_left, "lforearm", act_obj)
+            
+            merge_groups(SWJS_upperarm_bones_left, "lshoulder", act_obj)
+            merge_groups(SWJS_upperarm_bones_right, "rshoulder", act_obj)
+            
+            merge_groups(SWJS_clav_bones_left, "lclav", act_obj)
+            
+            merge_groups(SWJS_hip_left, "lhip", act_obj)
+            merge_groups(SWJS_hip_right, "rhip", act_obj)
+            
+            merge_groups(SWJS_calf_left, "lcalf", act_obj)
+            merge_groups(SWJS_calf_right, "rcalf", act_obj)
+            
+            merge_groups(SWJS_toe_left, "ltoe", act_obj)
+            merge_groups(SWJS_toe_right, "rtoe", act_obj)
+
+
         def swjs_fixups(act_obj):
             # TODO: rewrite this to make more sense
             fbx_mode = bpy.context.scene.ezpaint_opts.fbx_mode
             if fbx_mode:
                 # Used only for models from common SWJS FBX archives
                 act_obj.scale = (0.38, 0.38, 0.38)
-                act_obj.rotation_euler[0] = math.radians(-0)  # If you ask me why this works I have no idea this shit fucked
-                # Used only for models from common SWJS FBX archives
-
-                merge_groups(SWJS_fc_bones, "headgroup", act_obj)
-
-                merge_groups(SWJS_NeckA_bones, "neckagroup", act_obj)
-
-                merge_groups(SWJS_NeckB_bones, "neckbgroup", act_obj)
-
-                merge_groups(SWJS_Pelvis_bones, "pelivsgroup", act_obj)
-
-                merge_groups(SWJS_Spine2_bones, "spine2group", act_obj)
-
-                merge_groups(SWJS_hand_bones_right, "rhand", act_obj)
-                merge_groups(SWJS_hand_bones_left, "lhand", act_obj)
-
-                merge_groups(SWJS_forearm_bones_right, "rforearm", act_obj)
-                merge_groups(SWJS_forearm_bones_left, "lforearm", act_obj)
-
-                merge_groups(SWJS_upperarm_bones_left, "lshoulder", act_obj)
-                merge_groups(SWJS_upperarm_bones_right, "rshoulder", act_obj)
-
-                merge_groups(SWJS_clav_bones_left, "lclav", act_obj)
-
-                merge_groups(SWJS_hip_left, "lhip", act_obj)
-                merge_groups(SWJS_hip_right, "rhip", act_obj)
-
-                merge_groups(SWJS_calf_left, "lcalf", act_obj)
-                merge_groups(SWJS_calf_right, "rcalf", act_obj)
-
-                merge_groups(SWJS_toe_left, "ltoe", act_obj)
-                merge_groups(SWJS_toe_right, "rtoe", act_obj)
+                act_obj.rotation_euler[0] = math.radians(
+                    -0)  # If you ask me why this works I have no idea this shit fucked
+                swjs_fixups_helper(act_obj)
 
             else:
                 # Only use with direct rips from umodel!
                 act_obj.scale = (38.5, 38.5, 38.5)
                 # Only use with direct rips from umodel!
-
-                merge_groups(SWJS_fc_bones, "headgroup", act_obj)
-
-                merge_groups(SWJS_NeckA_bones, "neckagroup", act_obj)
-
-                merge_groups(SWJS_NeckB_bones, "neckbgroup", act_obj)
-
-                merge_groups(SWJS_Pelvis_bones, "pelivsgroup", act_obj)
-
-                merge_groups(SWJS_Spine2_bones, "spine2group", act_obj)
-
-                merge_groups(SWJS_hand_bones_right, "rhand", act_obj)
-                merge_groups(SWJS_hand_bones_left, "lhand", act_obj)
-
-                merge_groups(SWJS_forearm_bones_right, "rforearm", act_obj)
-                merge_groups(SWJS_forearm_bones_left, "lforearm", act_obj)
-
-                merge_groups(SWJS_upperarm_bones_left, "lshoulder", act_obj)
-                merge_groups(SWJS_upperarm_bones_right, "rshoulder", act_obj)
-
-                merge_groups(SWJS_clav_bones_left, "lclav", act_obj)
-
-                merge_groups(SWJS_hip_left, "lhip", act_obj)
-                merge_groups(SWJS_hip_right, "rhip", act_obj)
-
-                merge_groups(SWJS_calf_left, "lcalf", act_obj)
-                merge_groups(SWJS_calf_right, "rcalf", act_obj)
-
-                merge_groups(SWJS_toe_left, "ltoe", act_obj)
-                merge_groups(SWJS_toe_right, "rtoe", act_obj)
+                swjs_fixups_helper(act_obj)
 
         def swbf_fixups(act_obj):
 
@@ -2897,86 +2795,53 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
 
             merge_groups(swbf_toe_left, "ltoe", act_obj)
             merge_groups(swbf_toe_right, "rtoe", act_obj)
-
+        
+        def fortnite_fixups_helper(act_obj):
+        
+            merge_groups(fortnite_fc_bones, "headgroup", act_obj)
+            
+            merge_groups(fortnite_neck_bones, "neckgroup", act_obj)
+            
+            merge_groups(fortnite_spine4_bones, "spine4group", act_obj)
+            
+            merge_groups(fortnite_spine2_bones, "spine2group", act_obj)
+            
+            merge_groups(fortnite_spine_bones, "spinegroup", act_obj)
+            
+            merge_groups(fortnite_Pelvis_bones, "pelivsgroup", act_obj)
+            
+            merge_groups(fortnite_hand_bones_right, "rhand", act_obj)
+            merge_groups(fortnite_hand_bones_left, "lhand", act_obj)
+            
+            merge_groups(fortnite_forearm_bones_right, "rforearm", act_obj)
+            merge_groups(fortnite_forearm_bones_left, "lforearm", act_obj)
+            
+            merge_groups(fortnite_upperarm_bones_left, "lshoulder", act_obj)
+            merge_groups(fortnite_upperarm_bones_right, "rshoulder", act_obj)
+            
+            merge_groups(fortnite_clavicle_bones_left, "lclavicle", act_obj)
+            merge_groups(fortnite_clavicle_bones_right, "rclavicle", act_obj)
+            
+            merge_groups(fortnite_hip_left, "lhip", act_obj)
+            merge_groups(fortnite_hip_right, "rhip", act_obj)
+            
+            merge_groups(fortnite_calf_left, "lcalf", act_obj)
+            merge_groups(fortnite_calf_right, "rcalf", act_obj)
+            
+            merge_groups(fortnite_ankle_left, "lankle", act_obj)
+            merge_groups(fortnite_ankle_right, "rankle", act_obj)
+        
         def fortnite_fixups(act_obj):
 
-            fortnite_female_armature = (
-                bpy.context.scene.ezpaint_opts.fortnite_female_armature
-            )
+            fortnite_female_armature = bpy.context.scene.ezpaint_opts.fortnite_female_armature
+
             if fortnite_female_armature:
-                #Female Fornite Models use a different armature compared to males requiring different scaling
-                act_obj.scale = (44, 44, 44)
-                #Female Fornite Models use a different armature compared to males requiring different scaling
-
-                merge_groups(fortnite_fc_bones, "headgroup", act_obj)
-
-                merge_groups(fortnite_Neck_bones, "neckgroup", act_obj)
-
-                merge_groups(fortnite_spine4_bones, "spine4group", act_obj)
-
-                merge_groups(fortnite_spine2_bones, "spine2group", act_obj)
-
-                merge_groups(fortnite_spine_bones, "spinegroup", act_obj)
-
-                merge_groups(fortnite_Pelvis_bones, "pelivsgroup", act_obj)
-
-                merge_groups(fortnite_hand_bones_right, "rhand", act_obj)
-                merge_groups(fortnite_hand_bones_left, "lhand", act_obj)
-
-                merge_groups(fortnite_forearm_bones_right, "rforearm", act_obj)
-                merge_groups(fortnite_forearm_bones_left, "lforearm", act_obj)
-
-                merge_groups(fortnite_upperarm_bones_left, "lshoulder", act_obj)
-                merge_groups(fortnite_upperarm_bones_right, "rshoulder", act_obj)
-
-                merge_groups(fortnite_clavicle_bones_left, "lclavicle", act_obj)
-                merge_groups(fortnite_clavicle_bones_right, "rclavicle", act_obj)
-
-                merge_groups(fortnite_hip_left, "lhip", act_obj)
-                merge_groups(fortnite_hip_right, "rhip", act_obj)
-
-                merge_groups(fortnite_calf_left, "lcalf", act_obj)
-                merge_groups(fortnite_calf_right, "rcalf", act_obj)
-
-                merge_groups(fortnite_ankle_left, "lankle", act_obj)
-                merge_groups(fortnite_ankle_right, "rankle", act_obj)
+                act_obj.scale = (44, 44, 44) # Female Fornite Models use a different armature compared to males requiring different scaling
+                fortnite_fixups_helper(act_obj)
             else:
-                #Male Fortnite Scaling 
-                act_obj.scale = (42.5, 42.5, 42.5)
-                #Male Fortnite Scaling 
-
-                merge_groups(fortnite_fc_bones, "headgroup", act_obj)
-
-                merge_groups(fortnite_Neck_bones, "neckgroup", act_obj)
-
-                merge_groups(fortnite_spine4_bones, "spine4group", act_obj)
-
-                merge_groups(fortnite_spine2_bones, "spine2group", act_obj)
-
-                merge_groups(fortnite_spine_bones, "spinegroup", act_obj)
-
-                merge_groups(fortnite_Pelvis_bones, "pelivsgroup", act_obj)
-
-                merge_groups(fortnite_hand_bones_right, "rhand", act_obj)
-                merge_groups(fortnite_hand_bones_left, "lhand", act_obj)
-
-                merge_groups(fortnite_forearm_bones_right, "rforearm", act_obj)
-                merge_groups(fortnite_forearm_bones_left, "lforearm", act_obj)
-
-                merge_groups(fortnite_upperarm_bones_left, "lshoulder", act_obj)
-                merge_groups(fortnite_upperarm_bones_right, "rshoulder", act_obj)
-
-                merge_groups(fortnite_clavicle_bones_left, "lclavicle", act_obj)
-                merge_groups(fortnite_clavicle_bones_right, "rclavicle", act_obj)
-
-                merge_groups(fortnite_hip_left, "lhip", act_obj)
-                merge_groups(fortnite_hip_right, "rhip", act_obj)
-
-                merge_groups(fortnite_calf_left, "lcalf", act_obj)
-                merge_groups(fortnite_calf_right, "rcalf", act_obj)
-
-                merge_groups(fortnite_ankle_left, "lankle", act_obj)
-                merge_groups(fortnite_ankle_right, "rankle", act_obj)
+                act_obj.scale = (42.5, 42.5, 42.5) # Female Fornite Models use a different armature compared to males requiring different scaling
+                fortnite_fixups_helper(act_obj)
+                
 
         def reweight(v_groups, name_list):
             for n in name_list:
@@ -3003,7 +2868,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
                     if line.startswith("{"):
                         in_merge_area = True
                     if line.startswith("}"):
-                        temp_group.append(line[:-1])
+                        temp_group.append(line.strip())
                         temp_group.append(lines[i + 1])
                         in_merge_area = False
                     if in_merge_area:
@@ -3016,8 +2881,8 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
                     if line.startswith("]"):
                         in_vertex_area = False
                     if in_vertex_area:
-                        if not "[" in line and not "]" in line:
-                            line = line[:-1]
+                        if "[" not in line and "]" not in line:
+                            line = line.strip()
                             vertex_groups_replacement_list.append(line.split(":"))
 
             print(scale)
@@ -3026,7 +2891,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             raw_group = []
             for g in groups_to_merge:
                 if len(g):
-                    final_name = g[-1].strip()
+                    final_name = g[-1].strip()  # last element (minus newline)
                     for k in g:
                         if "{" not in k and "}" not in k and final_name not in k:
                             raw_group.append(k.strip())
@@ -3038,27 +2903,36 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             act_obj.scale = (scale, scale, scale)
             reweight(v_groups, vertex_groups_replacement_list)
 
-        if swtor == True:
+        if selected_game == "SWTOR":
+            print("SW:TOR MODE")
             swtor_fixups(act_obj)
             reweight(v_groups, swtor_name_list)
-        elif jka == True:
-            jka_fixups(act_obj)
-            reweight(v_groups, jka_name_list)
-        elif bungie_smalldef == True:
+        if selected_game == "DEST2":
+            print("DESTINY 2 MODE")
             bungie_smalldef_fixups(act_obj)
             # TODO: add checks for other bungie skeleton sizes
             reweight(v_groups, bungie_sm_name_list)
-        elif swjs == True:
+        if selected_game == "JKA":
+            print("JEDI KNIGHT MODE")
+            jka_fixups(act_obj)
+            reweight(v_groups, jka_name_list)
+        if selected_game == "SWJS":
+            print("JEDI SERIES MODE")
             swjs_fixups(act_obj)
             reweight(v_groups, swjs_name_list)
-        elif swbf == True:
+        if selected_game == "BFII":
+            print("BATTLEFRONT MODE")
             swbf_fixups(act_obj)
             reweight(v_groups, swbf_name_list)
-        elif custom:
+        if selected_game == "FORTNITE":
+            print("FORTNITE MODE")
+            fortnite_fixups(act_obj)
+            reweight(v_groups, fortnite_name_list)
+        if selected_game == "CUSTOM":
+            print("CUSTOM MODE")
             custom_fixups(act_obj)
-            # reweight(v_groups, custom_name_list)
 
-        return {"FINISHED"}
+        return {'FINISHED'}
 
     def invoke(self, context, event):
         wm = context.window_manager
@@ -3073,6 +2947,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
         col.label(text="INFO:", icon="ERROR")
         col.label(text="  Processing can take several seconds!")
         col.label(text="  ONLY the active object will be processed.")
+        col.label(text="  Results may vary if games have unique skeletons.")
 
 
 class EZPAINT_Settings(PropertyGroup):
@@ -3083,9 +2958,9 @@ class EZPAINT_Settings(PropertyGroup):
         ("BFII", "BF/II", "Star Wars Battlefront & Battlefront II"),
         ("DEST2", "Destiny 2", "Destiny 2 - Only supports small characters for now"),
         (
-            "FORNITE",
-            "Fortnite Battle Royal",
-            "Fortnite - Only limited support for characters due to most models have unique bones",
+            "FORTNITE",
+            "Fortnite Battle Royale",
+            "Fortnite - Only limited support for characters due to most models having unique bones",
         ),
         (
             "CUSTOM",
@@ -3101,7 +2976,7 @@ class EZPAINT_Settings(PropertyGroup):
     )
 
     fortnite_female_armature: BoolProperty(
-        name="Female Armature (Only use for Female Fortnite meshes)",
+        name="Female Armature (Only use for female Fortnite meshes)",
         description="Only use when using a female model from fortnite. Leave unchecked if model is male",
         default=False,
     )
@@ -3178,14 +3053,10 @@ classes = (
     EZP_PT_options_panel,
 )
 
-# def menu_func(self, context): #This just adds the menu
-#    self.layout.operator(EZPAINT_OT_ReweightModel.bl_idname)
-
 
 def register():
     for c in classes:
         bpy.utils.register_class(c)
-    # bpy.types.VIEW3D_MT_object.prepend(menu_func)  # Adds the new operator to an existing menu.
     bpy.types.Scene.ezpaint_opts = PointerProperty(type=EZPAINT_Settings)
 
 
