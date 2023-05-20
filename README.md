@@ -11,7 +11,6 @@ These are available under Addon Preferences
 You may need to press 'N' or use the F3 menu to search for the operator
 ## Step 4: Parent the mesh to a proportioned armature and export it
 ## Custom file demo:
-https://github.com/FallenLogic/ezPaint/assets/68028253/b829450d-d7ff-4a9a-b44c-827266778dad
 For a custom vertex group mapping file,
 The first line must be a number (this is converted to a float or int), and it is the scaling factor applied to the active object when the custom file is applied. If the object is in the correct scale, simply make the first line the number 1.
 
@@ -44,7 +43,7 @@ forearm_group:ValveBiped.Bip01_L_Forearm
 Save this as a text file and use the options panel or addon preferences panel to load it.
 Note that the groups defined in the merge section can be used in the replace section.
 
-# Video 1
+# Inspired by the Proportion Trick
 https://www.youtube.com/watch?v=n9lmxpjSv0I
-# Video 2 (Explanation Starts at 0:39)
+# Video about the old version (Explanation Starts at 0:39)
 https://youtu.be/Fc-asdOZXZM?list=PL7_W6qzKk7Yi_YImOM00yUi0Cu8iqavCj
