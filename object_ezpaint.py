@@ -1,25 +1,31 @@
 # ----------------
-# ezPaint Blender addon
-# Created in 2022 by FallenLogic, 2023 updates thanks to NadaYukie
+# ezPaint Blender add-on
+# Created by FallenLogic & NadaYukie
 # ----------------
-
-bl_info = {
-    'name': 'ezPaint',
-    'description': 'Automatically weightpaint models from a variety of games for use with the Source Engine',
-    'author': 'FallenLogic (original author), NadaYukie (Adding support for many games)',
-    'version': (0, 18),
-    'blender': (2, 80, 0),
-    'location': 'Search Menu (Object Mode) | ezPaint',
-    'warning': "Requires other addons to import and export models (see documentation)",
-    'wiki_url': 'https://github.com/FallenLogic/ezPaint',
-    "tracker_url": "https://github.com/FallenLogic/ezPaint/issues",
-    'category': 'Object',
-}
-
 import bpy
 import math
-from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty, PointerProperty, StringProperty
+from bpy.props import (
+    BoolProperty,
+    EnumProperty,
+    FloatProperty,
+    IntProperty,
+    PointerProperty,
+    StringProperty,
+)
 from bpy.types import PropertyGroup
+
+bl_info = {
+    "name": "ezPaint",
+    "description": "Automatically weightpaint models from a variety of games for use with the Source Engine",
+    "author": "FallenLogic (original author), NadaYukie (adding support for many games)",
+    "version": (0, 18),
+    "blender": (2, 80, 0),
+    "location": "Search Menu (Object Mode) | ezPaint",
+    "warning": "Requires other addons to import and export models (see documentation)",
+    "wiki_url": "https://github.com/FallenLogic/ezPaint",
+    "tracker_url": "https://github.com/FallenLogic/ezPaint/issues",
+    "category": "Object",
+}
 
 swtor_name_list = [
     # old vertex group name - new vertex group name
@@ -205,7 +211,7 @@ swjs_name_list = [
     ["spineB", "ValveBiped.Bip01_Spine1"],
     ["spine2group", "ValveBiped.Bip01_Spine2"],
     ["neckagroup", "ValveBiped.Bip01_Spine4"],
-    ["l_clav", "ValveBiped.Bip01_L_Clavicle"],
+    ["lclav", "ValveBiped.Bip01_L_Clavicle"],
     ["lshoulder", "ValveBiped.Bip01_L_UpperArm"],
     ["lforearm", "ValveBiped.Bip01_L_Forearm"],
     ["lhand", "ValveBiped.Bip01_L_Hand"],
@@ -322,6 +328,70 @@ swbf_name_list = [
     #    think this is leftover, test later
     ["", "ValveBiped.Bip01_Pelvis"],
 ]
+
+fortnite_name_list = [
+    ["Root", "ValveBiped.Bip01_Pelvis"],
+    ["RootSpine", "ValveBiped.Bip01_Pelvis"],
+    ["pelivsgroup", "ValveBiped.Bip01_Pelvis"],
+    ["spinegroup", "ValveBiped.Bip01_Spine"],
+    ["spine 2", "ValveBiped.Bip01_Spine1"],
+    ["spine2group", "ValveBiped.Bip01_Spine2"],
+    ["spine4group", "ValveBiped.Bip01_Spine4"],
+    ["lclavicle", "ValveBiped.Bip01_L_Clavicle"],
+    ["lshoulder", "ValveBiped.Bip01_L_UpperArm"],
+    ["lforearm", "ValveBiped.Bip01_L_Forearm"],
+    ["lhand", "ValveBiped.Bip01_L_Hand"],
+    ["arm left finger 1a", "ValveBiped.Bip01_L_Finger0"],  # l-thumb
+    ["arm left finger 1b", "ValveBiped.Bip01_L_Finger01"],
+    ["arm left finger 1c", "ValveBiped.Bip01_L_Finger02"],  # end l-thumb
+    ["arm left finger 2a", "ValveBiped.Bip01_L_Finger1"],  # l-index
+    ["arm left finger 2b", "ValveBiped.Bip01_L_Finger11"],
+    ["arm left finger 2c", "ValveBiped.Bip01_L_Finger12"],  # end l-index
+    ["arm left finger 3a", "ValveBiped.Bip01_L_Finger2"],  # l-hand remainder
+    ["arm left finger 3b", "ValveBiped.Bip01_L_Finger21"],
+    ["arm left finger 3c", "ValveBiped.Bip01_L_Finger22"],
+    ["arm left finger 4a", "ValveBiped.Bip01_L_Finger3"],
+    ["arm left finger 4b", "ValveBiped.Bip01_L_Finger31"],
+    ["arm left finger 4c", "ValveBiped.Bip01_L_Finger32"],
+    ["arm left finger 5a", "ValveBiped.Bip01_L_Finger4"],
+    ["arm left finger 5b", "ValveBiped.Bip01_L_Finger41"],
+    ["arm left finger 5c", "ValveBiped.Bip01_L_Finger42"],
+    #   end l-hand remainder
+    ["rclavicle", "ValveBiped.Bip01_R_Clavicle"],
+    ["rshoulder", "ValveBiped.Bip01_R_UpperArm"],
+    ["rforearm", "ValveBiped.Bip01_R_Forearm"],
+    ["rhand", "ValveBiped.Bip01_R_Hand"],
+    ["arm right finger 1a", "ValveBiped.Bip01_R_Finger0"],  # r-thumb
+    ["arm right finger 1b", "ValveBiped.Bip01_R_Finger01"],
+    ["arm right finger 1c", "ValveBiped.Bip01_R_Finger02"],  # end r-thumb
+    ["arm right finger 2a", "ValveBiped.Bip01_R_Finger1"],  # r-index
+    ["arm right finger 2b", "ValveBiped.Bip01_R_Finger11"],
+    ["arm right finger 2c", "ValveBiped.Bip01_R_Finger12"],  # end r-index
+    ["arm right finger 3a", "ValveBiped.Bip01_R_Finger2"],  # r-hand remainder
+    ["arm right finger 3b", "ValveBiped.Bip01_R_Finger21"],
+    ["arm right finger 3c", "ValveBiped.Bip01_R_Finger22"],
+    ["arm right finger 4a", "ValveBiped.Bip01_R_Finger3"],
+    ["arm right finger 4b", "ValveBiped.Bip01_R_Finger31"],
+    ["arm right finger 4c", "ValveBiped.Bip01_R_Finger32"],
+    ["arm right finger 5a", "ValveBiped.Bip01_R_Finger4"],
+    ["arm right finger 5b", "ValveBiped.Bip01_R_Finger41"],
+    ["arm right finger 5c", "ValveBiped.Bip01_R_Finger42"],
+    ["neckgroup", "ValveBiped.Bip01_Neck1"],
+    ["lhip", "ValveBiped.Bip01_L_Thigh"],
+    ["lcalf", "ValveBiped.Bip01_L_Calf"],
+    ["lankle", "ValveBiped.Bip01_L_Foot"],
+    ["leg left toes", "ValveBiped.Bip01_L_Toe0"],
+    ["rhip", "ValveBiped.Bip01_R_Thigh"],
+    ["rcalf", "ValveBiped.Bip01_R_Calf"],
+    ["rankle", "ValveBiped.Bip01_R_Foot"],
+    ["leg right toes", "ValveBiped.Bip01_R_Toe0"],
+    ["Skirt1", "ValveBiped.Bip01_Pelvis"],
+    ["Skirt2", "ValveBiped.Cod"],
+    ["headgroup", "ValveBiped.Bip01_Head1"],
+    #    think this is leftover, test later
+    ["", "ValveBiped.Bip01_Pelvis"],
+]
+
 SWJS_fc_bones = {
     "head",
     "head_tip",
@@ -1813,28 +1883,9 @@ SWJS_Spine2_bones = {
     "l_armpit_end",
     "r_armpit",
     "r_armpit_end",
-}
-
-SWJS_Skirt_bones = {
-    "belt",
-    "holster_lightsaber",
-    "holster_lightsaberAttach",
-    "holster_lightsaberAttach_end",
-    "holster_blaster",
-    "holster_blasterAttach",
-    "holster_blasterAttach_end",
-    "r_magazinePouch",
-    "r_magazinePouch_end",
-    "r_magazinePouch_end_end",
-    "l_magazinePouch",
-    "l_magazinePouch_end",
-    "l_magazinePouch_end_end",
-    "l_magazinePouch",
-    "l_magazinePouch_end",
-    "l_magazinePouch_end_end",
-    "holster_1",
-    "holster_2",
-    "holster_2_end",
+    "l_armor_strap_attach",
+    "r_armor_strap_attach",
+    "chest_armor",
 }
 
 SWJS_Pelvis_bones = {
@@ -2008,6 +2059,11 @@ SWJS_upperarm_bones_left = {
     "l_shldr_auxA_bk_end",
 }
 
+SWJS_clav_bones_left = {
+    "l_clav",
+    "l_shoulder_armor",
+}
+
 SWJS_hip_left = {
     "l_thigh",
     "l_thigh_segment_1",
@@ -2020,6 +2076,17 @@ SWJS_hip_left = {
     "l_thigh_segment_4_end",
     "l_thigh_segment_5",
     "l_thigh_segment_5_end",
+    "l_knee_helper",
+    "l_skirtA_sim",
+    "l_skirtB_sim",
+    "l_skirtC_sim",
+    "l_skirtD_sim",
+    "l_skirtE_sim",
+    "l_bk_skirtA_sim",
+    "l_bk_skirtB_sim",
+    "l_bk_skirtC_sim",
+    "l_bk_skirtD_sim",
+    "l_bk_skirtE_sim",
 }
 
 SWJS_hip_right = {
@@ -2034,6 +2101,17 @@ SWJS_hip_right = {
     "r_thigh_segment_4_end",
     "r_thigh_segment_5",
     "r_thigh_segment_5_end",
+    "r_knee_helper",
+    "r_bk_skirtA_sim",
+    "r_bk_skirtB_sim",
+    "r_bk_skirtC_sim",
+    "r_bk_skirtD_sim",
+    "r_bk_skirtE_sim",
+    "r_skirtA_sim",
+    "r_skirtB_sim",
+    "r_skirtC_sim",
+    "r_skirtD_sim",
+    "r_skirtE_sim",
 }
 
 SWJS_calf_left = {
@@ -2141,484 +2219,6 @@ jka_fc_group = {
     "reye",
 }
 
-swbf_fc_bones = {
-    "Head",
-    "HeadEnd",
-    "Face",
-    "Jaw",
-    "LeftLowerLip",
-    "LeftLowerInnerLip",
-    "LowerLip",
-    "LowerInnerLip",
-    "RightLowerLip",
-    "RightLowerInnerLip",
-    "Tongue",
-    "TongueTip",
-    "Chin",
-    "LeftLowCheek",
-    "RightLowCheek",
-    "LeftEye",
-    "LeftIris",
-    "RightEye",
-    "RightIris",
-    "LeftUpCheek",
-    "LeftUpInnerCheek",
-    "RightUpInnerCheek",
-    "RightUpCheek",
-    "LeftCheek",
-    "RightCheek",
-    "LeftMouth",
-    "LeftInnerMouth",
-    "LeftMiddleCrease",
-    "LeftUpperLip",
-    "LeftUpperInnerLip",
-    "UpperLip",
-    "UpperInnerLip",
-    "RightUpperLip",
-    "RightUpperInnerLip",
-    "RightMouth",
-    "RightInnerMouth",
-    "RightMiddleCrease",
-    "LeftUpEyelid",
-    "RightUpEyelid",
-    "LeftLowEyelid",
-    "RightLowEyelid",
-    "LeftInnerEyebrow",
-    "LeftOuterEyebrow",
-    "RightInnerEyebrow",
-    "RightOuterEyebrow",
-    "LeftNose",
-    "RightNose",
-    "LeftCrease",
-    "RightCrease",
-    "LeftLowMiddleEyebrow",
-    "RightMiddleEyebrow",
-    "LeftLowEyelidCrease",
-    "LeftLowOuterEyebrow",
-    "NoseTip",
-    "RightLowOuterEyebrow",
-    "LeftMiddleEyebrow",
-    "RightLowMiddleEyebrow",
-    "RightLowEyelidCrease",
-    "LowNose",
-    "Head_Phys_Base01",
-    "Head_Phys_01",
-    "Hair_01_Base",
-    "Hair_01_Extra01",
-    "Hair_01_Extra02",
-    "Hair_02_Base",
-    "Hair_02_Extra01",
-    "Hair_02_Extra02",
-    "Hair_03_Base",
-    "Hair_03_Extra01",
-    "Hair_03_Extra02",
-    "Hair_04_Base",
-    "Hair_04_Extra01",
-    "Hair_04_Extra02",
-    "Hair_05_Base",
-    "Hair_05_Extra01",
-    "Hair_05_Extra02",
-    "Hair_05_Extra03",
-    "Hair_06_Base",
-    "Hair_06_Extra01",
-    "Hair_06_Extra02",
-    "Hair_06_Extra03",
-    "Hair_07_Base",
-    "Hair_07_Extra01",
-    "Hair_07_Extra02",
-    "Hair_08_Base",
-    "Hair_08_Extra01",
-    "Hair_08_Extra02",
-    "Hair_08_Extra03",
-    "FACIAL_C_FacialRoot",
-    "FACIAL_LOD1_C_Forehead",
-    "FACIAL_LOD1_C_Forehead_end",
-    "FACIAL_LOD1_L_ForeheadIn",
-    "FACIAL_LOD1_L_ForeheadIn_end",
-    "FACIAL_LOD1_R_ForeheadIn",
-    "FACIAL_LOD1_R_ForeheadIn_end",
-    "FACIAL_LOD1_L_ForeheadMid",
-    "FACIAL_LOD1_L_ForeheadMid_end",
-    "FACIAL_LOD1_R_ForeheadMid",
-    "FACIAL_LOD1_R_ForeheadMid_end",
-    "FACIAL_LOD1_L_ForeheadOut",
-    "FACIAL_LOD1_L_ForeheadOut_end",
-    "FACIAL_LOD1_R_ForeheadOut",
-    "FACIAL_LOD1_R_ForeheadOut_end",
-    "FACIAL_LOD1_L_EyesackUpper",
-    "FACIAL_LOD1_L_EyesackUpper_end",
-    "FACIAL_LOD1_R_EyesackUpper",
-    "FACIAL_LOD1_R_EyesackUpper_end",
-    "FACIAL_LOD1_L_EyelidUpperFurrow",
-    "FACIAL_LOD1_L_EyelidUpperFurrow_end",
-    "FACIAL_LOD1_R_EyelidUpperFurrow",
-    "FACIAL_LOD1_R_EyelidUpperFurrow_end",
-    "FACIAL_LOD1_L_EyelidUpper",
-    "FACIAL_LOD1_L_EyelidUpper_end",
-    "FACIAL_LOD1_R_EyelidUpper",
-    "FACIAL_LOD1_R_EyelidUpper_end",
-    "FACIAL_LOD1_L_Eyeball",
-    "FACIAL_LOD1_L_Pupil",
-    "FACIAL_LOD1_L_Pupil_end",
-    "FACIAL_LOD1_R_Eyeball",
-    "FACIAL_LOD1_R_Pupil",
-    "FACIAL_LOD1_R_Pupil_end",
-    "FACIAL_LOD1_L_EyelidLower",
-    "FACIAL_LOD1_L_EyelidLower_end",
-    "FACIAL_LOD1_R_EyelidLower",
-    "FACIAL_LOD1_R_EyelidLower_end",
-    "FACIAL_LOD1_L_EyesackLower",
-    "FACIAL_LOD1_L_EyesackLower_end",
-    "FACIAL_LOD1_R_EyesackLower",
-    "FACIAL_LOD1_R_EyesackLower_end",
-    "FACIAL_LOD1_L_CheekInner",
-    "FACIAL_LOD1_L_CheekInner_end",
-    "FACIAL_LOD1_R_CheekInner",
-    "FACIAL_LOD1_R_CheekInner_end",
-    "FACIAL_LOD1_L_CheekOuter",
-    "FACIAL_LOD1_L_CheekOuter_end",
-    "FACIAL_LOD1_R_CheekOuter",
-    "FACIAL_LOD1_R_CheekOuter_end",
-    "FACIAL_LOD1_C_NoseBridge",
-    "FACIAL_LOD1_C_NoseBridge_end",
-    "FACIAL_LOD1_L_NasolabialBulge",
-    "FACIAL_LOD1_L_NasolabialBulge_end",
-    "FACIAL_LOD1_R_NasolabialBulge",
-    "FACIAL_LOD1_R_NasolabialBulge_end",
-    "FACIAL_LOD1_L_NasolabialFurrow",
-    "FACIAL_LOD1_L_NasolabialFurrow_end",
-    "FACIAL_LOD1_R_NasolabialFurrow",
-    "FACIAL_LOD1_R_NasolabialFurrow_end",
-    "FACIAL_LOD1_L_CheekLower",
-    "FACIAL_LOD1_L_CheekLower_end",
-    "FACIAL_LOD1_R_CheekLower",
-    "FACIAL_LOD1_R_CheekLower_end",
-    "FACIAL_LOD1_L_Ear",
-    "FACIAL_LOD1_L_Ear_end",
-    "FACIAL_LOD1_R_Ear",
-    "FACIAL_LOD1_R_Ear_end",
-    "FACIAL_LOD1_C_Nose",
-    "FACIAL_LOD1_C_NoseLower",
-    "FACIAL_LOD1_C_NoseLower_end",
-    "FACIAL_LOD1_L_Nostril",
-    "FACIAL_LOD1_L_Nostril_end",
-    "FACIAL_LOD1_R_Nostril",
-    "FACIAL_LOD1_R_Nostril_end",
-    "FACIAL_LOD1_C_Mouth",
-    "FACIAL_LOD1_C_LipUpper",
-    "FACIAL_LOD1_C_LipUpperInner",
-    "FACIAL_LOD1_C_LipUpperInner_end",
-    "FACIAL_LOD1_L_LipUpper",
-    "FACIAL_LOD1_L_LipUpperInner",
-    "FACIAL_LOD1_L_LipUpperInner_end",
-    "FACIAL_LOD1_R_LipUpper",
-    "FACIAL_LOD1_R_LipUpperInner",
-    "FACIAL_LOD1_R_LipUpperInner_end",
-    "FACIAL_LOD1_L_LipUpperOuter",
-    "FACIAL_LOD1_L_LipUpperOuterInner",
-    "FACIAL_LOD1_L_LipUpperOuterInner_end",
-    "FACIAL_LOD1_R_LipUpperOuter",
-    "FACIAL_LOD1_R_LipUpperOuterInner",
-    "FACIAL_LOD1_R_LipUpperOuterInner_end",
-    "FACIAL_LOD1_L_LipCorner",
-    "FACIAL_LOD1_L_LipCornerInner",
-    "FACIAL_LOD1_L_LipCornerInner_end",
-    "FACIAL_LOD1_R_LipCorner",
-    "FACIAL_LOD1_R_LipCornerInner",
-    "FACIAL_LOD1_R_LipCornerInner_end",
-    "FACIAL_LOD1_C_LipLower",
-    "FACIAL_LOD1_C_LipLowerInner",
-    "FACIAL_LOD1_C_LipLowerInner_end",
-    "FACIAL_LOD1_L_LipLower",
-    "FACIAL_LOD1_L_LipLowerInner",
-    "FACIAL_LOD1_L_LipLowerInner_end",
-    "FACIAL_LOD1_R_LipLower",
-    "FACIAL_LOD1_R_LipLowerInner",
-    "FACIAL_LOD1_R_LipLowerInner_end",
-    "FACIAL_LOD1_L_LipLowerOuter",
-    "FACIAL_LOD1_L_LipLowerOuterInner",
-    "FACIAL_LOD1_L_LipLowerOuterInner_end",
-    "FACIAL_LOD1_R_LipLowerOuter",
-    "FACIAL_LOD1_R_LipLowerOuterInner",
-    "FACIAL_LOD1_R_LipLowerOuterInner_end",
-    "FACIAL_LOD1_C_Jaw",
-    "FACIAL_LOD1_C_Chin",
-    "FACIAL_LOD1_C_Chin_end",
-    "FACIAL_LOD1_L_ChinSide",
-    "FACIAL_LOD1_L_ChinSide_end",
-    "FACIAL_LOD1_R_ChinSide",
-    "FACIAL_LOD1_R_ChinSide_end",
-    "FACIAL_LOD1_C_Tongue1",
-    "FACIAL_LOD1_C_Tongue2",
-    "FACIAL_LOD1_C_Tongue3",
-    "FACIAL_LOD1_C_Tongue4",
-    "FACIAL_LOD1_C_Tongue4_end",
-    "FACIAL_LOD1_L_Masseter",
-    "FACIAL_LOD1_L_Masseter_end",
-    "FACIAL_LOD1_R_Masseter",
-    "FACIAL_LOD1_R_Masseter_end",
-    "FACIAL_LOD1_C_UnderChin",
-    "FACIAL_LOD1_C_UnderChin_end",
-    "FACIAL_LOD1_L_UnderChin",
-    "FACIAL_LOD1_L_UnderChin_end",
-    "FACIAL_LOD1_R_UnderChin",
-    "FACIAL_LOD1_R_UnderChin_end",
-}
-
-swbf_NeckA_bones = {
-    "Neck",
-    "Wep2_Root",
-}
-
-swbf_NeckB_bones = {
-    "Neck1",
-    "Throat",
-    "HeadRoll",
-    "FACIAL_C_Neck2Root",
-    "FACIAL_LOD1_C_AdamsApple",
-    "FACIAL_LOD1_C_AdamsApple_end",
-}
-
-swbf_delete_bones = {}
-
-swbf_spine2_bones = {
-    "Spine2",
-    "Spine2_Phys",
-    "Spine2_Phys_Ext_Base01",
-    "Spine2_Phys_Ext_01",
-    "Spine2_Phys_Ext_Base02",
-    "Spine2_Phys_Ext_02",
-    "Spine2_Phys_Ext_Base03",
-    "Spine2_Phys_Ext_03",
-    "Spine2_Phys_Ext_Base04",
-    "Spine2_Phys_Ext_04",
-    "Backpack_Phys_Base01",
-    "Backpack_Phys_01",
-    "Backpack_Phys_Ext_Base01",
-    "Backpack_Phys_Ext_01",
-    "Backpack_Phys_Ext_Base02",
-    "Backpack_Phys_Ext_02",
-    "Backpack_Phys_Ext_Base03",
-    "Backpack_Phys_Ext_03",
-    "Backpack_Phys_Ext_Base04",
-    "Backpack_Phys_Ext_04",
-    "Backpack_Phys_Weapon_Base01",
-    "Backpack_Phys_Weapon_01",
-    "LeftArmpit",
-    "LeftDeltoidBulge",
-    "RightArmpit",
-    "RightDeltoidBulge",
-    "Wep_Root",
-    "Wep_Trigger",
-    "Wep_Slide",
-    "Wep_Grenade1",
-    "Wep_Grenade2",
-    "Wep_Mag",
-    "Wep_Mag_Ammo",
-    "Wep_Mag_Extra1",
-    "Wep_Scope1",
-    "Wep_Scope2",
-    "Wep_Belt1",
-    "Wep_Belt2",
-    "Wep_Belt3",
-    "Wep_Belt4",
-    "Wep_Belt5",
-    "Wep_Bipod1",
-    "Wep_Bipod2",
-    "Wep_Bipod3",
-    "IK_Joint_LeftHand",
-    "IK_Joint_RightHand",
-    "Wep_Physic1",
-    "Wep_Physic2",
-    "Wep_Physic3",
-    "Wep_Extra1",
-    "Wep_Extra2",
-    "Wep_Extra3",
-    "Wep_Extra4",
-    "Wep_Muzzle",
-    "Wep_ButtStock",
-    "Wep_Lag",
-    "Wep_Aim",
-    "NeckCollar",
-}
-
-swbf_spine1_bones = {
-    "Spine1",
-    "Spine1_Phys",
-    "Spine1_Phys_Ext_Base01",
-    "Spine1_Phys_Ext_01",
-    "Spine1_Phys_Ext_Base02",
-    "Spine1_Phys_Ext_02",
-    "Spine1_Phys_Ext_Base03",
-    "Spine1_Phys_Ext_03",
-    "Spine1_Phys_Ext_Base04",
-    "Spine1_Phys_Ext_04",
-    "Spine_Phys",
-}
-
-swbf_spine_bones = {
-    "Spine",
-    "Spine_Phys",
-    "Spine_Phys_Ext_Base01",
-    "Spine_Phys_Ext_01",
-    "Spine_Phys_Ext_Base02",
-    "Spine_Phys_Ext_02",
-    "Spine_Phys_Ext_Base03",
-    "Spine_Phys_Ext_03",
-    "Spine_Phys_Ext_Base04",
-    "Spine_Phys_Ext_04",
-    "Spine_Phys_Weapon_Base01",
-    "Spine_Phys_Weapon_01",
-}
-
-swbf_Skirt_bones = {}
-
-swbf_Pelvis_bones = {
-    "Hips",
-    "Hips_Phys",
-    "Hips_Phys_Ext_Base01",
-    "Hips_Phys_Ext_01",
-    "Hips_Phys_Ext_Base02",
-    "Hips_Phys_Ext_02",
-    "Hips_Phys_Ext_Base03",
-    "Hips_Phys_Ext_03",
-    "Hips_Phys_Ext_Base04",
-    "Hips_Phys_Ext_04",
-    "Hips_Phys_Ext_Base05",
-    "Hips_Phys_Ext_05",
-    "Hips_Phys_Ext_Base06",
-    "Hips_Phys_Ext_06",
-    "LeftHipsRoll",
-    "RightHipsRoll",
-    "AITrajectory",
-    "Trajectory",
-    "TrajectoryEnd",
-    "CameraBase",
-    "CameraJoint",
-    "Connect",
-    "ConnectEnd",
-    "Ground",
-    "blender_implicit",
-}
-
-swbf_index_bones_right = {
-    "RightHandIndex3",
-    "RightHandIndex4",
-}
-
-swbf_index_bones_left = {
-    "LeftHandIndex3",
-    "LeftHandIndex4",
-}
-
-swbf_hand_bones_right = {
-    "RightHand",
-    "RightHandRing0",
-    "RightHandPinky0",
-    "RightHandIndex0",
-    "RightHandThumb1",
-    "RightHandMiddle0",
-    "RightHandRing4",
-    "RightHandPinky4",
-    "RightHandMiddle4",
-    "RightHand_Phys_Base01",
-    "RightHand_Phys_01",
-    "RightHandAttach",
-}
-
-swbf_hand_bones_left = {
-    "LeftHand",
-    "LeftHandRing0",
-    "LeftHandPinky0",
-    "LeftHandIndex0",
-    "LeftHandThumb1",
-    "LeftHandMiddle0",
-    "LeftHandRing4",
-    "LeftHandPinky4",
-    "LeftHandMiddle4",
-    "LeftHand_Phys_Base01",
-    "LeftHand_Phys_01",
-    "LeftHandAttach",
-}
-
-swbf_forearm_bones_right = {
-    "RightForeArm",
-    "RightForeArmRoll",
-    "RightForeArmRoll1",
-    "RightForeArmRoll2",
-}
-
-swbf_forearm_bones_left = {
-    "LeftForeArm",
-    "LeftForeArmRoll",
-    "LeftForeArmRoll1",
-    "LeftForeArmRoll2",
-}
-
-swbf_upperarm_bones_right = {
-    "RightArm",
-    "RightArmRoll",
-    "RightArm_Phys_Base01",
-    "RightArm_Phys_01",
-    "RightElbowRoll",
-    "RightArmRoll1",
-    "RightArmBend",
-}
-
-swbf_upperarm_bones_left = {
-    "LeftArm",
-    "LeftArmRoll",
-    "LeftArm_Phys_Base01",
-    "LeftArm_Phys_01",
-    "LeftElbowRoll",
-    "LeftArmRoll1",
-    "LeftArmBend",
-}
-
-swbf_hip_left = {
-    "LeftUpLeg",
-    "LeftUpLeg_Phys_Base01",
-    "LeftUpLeg_Phys_01",
-    "LeftKneeUp",
-    "LeftUpLegRoll",
-    "LeftKneeRoll",
-}
-
-swbf_hip_right = {
-    "RightUpLeg",
-    "RightUpLeg_Phys_Base01",
-    "RightUpLeg_Phys_01",
-    "RightKneeUp",
-    "RightUpLegRoll",
-    "RightKneeRoll",
-}
-
-swbf_calf_left = {
-    "LeftLeg",
-    "LeftLeg_Phys_Base01",
-    "LeftLeg_Phys_01",
-    "LeftKneeLow",
-    "LeftKneeRoll",
-}
-
-swbf_calf_right = {
-    "RightLeg",
-    "RightLeg_Phys_Base01",
-    "RightLeg_Phys_01",
-    "RightKneeLow",
-    "RightKneeRoll",
-}
-
-swbf_toe_left = {
-    "LeftToeBase",
-    "LeftToe",
-}
-
-swbf_toe_right = {
-    "RightToeBase",
-    "RightToe",
-}
-
 bungie_fc_bones = {
     "Cheekbone.L",
     "UpperEyelid.L",
@@ -2670,92 +2270,346 @@ bungie_fc_bones = {
 bungie_hand_l_groups = {"Wrist_Twist_Fixup.L", "Hand.L"}
 bungie_hand_r_groups = {"Wrist_Twist_Fixup.R", "Hand.R"}
 
-swtor = True  # Star Wars: The Old Republic
-bungie_smalldef = False  # Destiny 2
-jka = False  # Star Wars: Jedi Knight II and Jedi Kinght III (Academy)
-swjs = False  # Star Wars: Jedi Series (Jedi Fallen Order and Jedi Surivor)
-swbf = False  # Star Wars Battlefront Series (EA Battlefront 1 and Battlefront 2)
-custom = False # Custom vertex group mapping file
+fortnite_fc_bones = {
+    "head neck upper",
+    "unusedfaceAttach",
+    "head eyebrow center",
+    "head eyebrow left 1",
+    "head eyebrow left 2",
+    "head cheek left",
+    "head lip upper middle",
+    "head lip upper left",
+    "head lip corner left",
+    "head nose bridge",
+    "head eyebrow right 1",
+    "head eyebrow right 2",
+    "head cheek right",
+    "head lip corner right",
+    "head jaw",
+    "head lip lower left",
+    "head lip lower middle",
+    "head lip lower right",
+    "head teeth lower",
+    "head tongue",
+    "head eyeball right",
+    "head eyeball left",
+    "head teeth upper",
+    "head lip upper right",
+    "head eyelid right upper",
+    "head eyelid right lower",
+    "head eyelid left upper",
+    "head eyelid left lower",
+    "hair braid a",
+    "helmet lower root",
+    "head fur front left",
+    "head fur front middle",
+    "head fur front right",
+    "head fur right a",
+    "head fur right b",
+    "head fur left d",
+    "head fur left c",
+    "head fur left b",
+    "head fur left a",
+    "braid front left a",
+    "braid front right 1a",
+    "braid front right 2a",
+    "braid back left 1a",
+    "braid back right a",
+    "braid back left 2a",
+}
+
+fortnite_neck_bones = {
+    "head neck lower",
+    "head neck middle",
+}
+
+fortnite_spine4_bones = {
+    "spine 5",
+    "hair braid b",
+    "hair braid c",
+    "hair braid d",
+    "hair braid e",
+    "fur front right",
+    "fur front left a",
+    "fur front left b",
+    "bandolier front middle",
+    "bandolier back middle",
+    "fur back top",
+    "bandolier front left a",
+    "bandolier front left b",
+    "bandolier front left c",
+    "bandolier back left a",
+    "bandolier back left b",
+    "bandolier back left c",
+    "bandolier front right a",
+    "bandolier front right b",
+    "bandolier front right c",
+    "bandolier back right a",
+    "bandolier back right b",
+    "bandolier back right c",
+    "braid front left b",
+    "braid front left c",
+    "braid front left d",
+    "braid front right 1b",
+    "braid front right 1c",
+    "braid front right 1d",
+    "braid front right 2b",
+    "braid front right 2c",
+    "braid front right 2d",
+    "braid back left 1b",
+    "braid back left 1c",
+    "braid back left 1d",
+    "braid back right b",
+    "braid back right c",
+    "braid back right d",
+    "braid back left 2b",
+    "braid back left 2c",
+    "braid back left 2d",
+    "braid back left 2e",
+}
+
+fortnite_spine2_bones = {
+    "spine 3",
+    "spine 4",
+    "fur front middle a",
+    "fur front middle b",
+    "fur back middle a",
+    "fur back middle b",
+    "fur front middle c",
+    "fur front middle d",
+}
+
+fortnite_spine_bones = {
+    "spine 1",
+}
+
+fortnite_Pelvis_bones = {
+    "root ground",
+    "root hips",
+    "pelvis",
+    "belt feather 1a",
+    "belt feather 1b",
+    "belt feather 1c",
+    "belt feather 1d",
+    "belt feather 1e",
+    "belt feather 2a",
+    "belt feather 2b",
+    "belt feather 2c",
+    "belt feather 2d",
+    "belt feather 2e",
+    "belt pouch",
+    "belt buckle",
+    "fur thigh left d",
+    "fur thigh left c",
+    "fur thigh left b",
+    "fur thigh left g",
+    "fur thigh left a",
+    "pouch root",
+}
+
+fortnite_hand_bones_right = {
+    "arm right wrist",
+    "arm right metacarpal 1",
+    "arm right metacarpal 2",
+    "arm right metacarpal 4",
+    "arm right metacarpal 3",
+    "fur wrist right d",
+}
+
+fortnite_hand_bones_left = {
+    "arm left wrist",
+    "arm left metacarpal 1",
+    "arm left metacarpal 2",
+    "arm left metacarpal 4",
+    "arm left metacarpal 3",
+    "fur wrist left f",
+}
+
+fortnite_forearm_bones_right = {
+    "arm right elbow",
+    "arm right wrist twist",
+    "arm right elbow twist",
+    "fur wrist right a",
+    "fur wrist right b",
+    "fur wrist right c",
+    "fur wrist right e",
+    "fur elbow right c",
+    "fur elbow right a",
+    "fur elbow right b",
+}
+
+fortnite_forearm_bones_left = {
+    "arm left elbow",
+    "arm left wrist twist",
+    "arm left elbow twist",
+    "fur wrist left c",
+    "fur wrist left b",
+    "fur wrist left a",
+    "fur wrist left d",
+    "fur wrist left e",
+    "fur elbow left d",
+    "arm left elbow back adj",
+    "fur elbow left b",
+    "fur elbow left c",
+    "fur elbow left a",
+}
+
+fortnite_upperarm_bones_right = {
+    "arm right shoulder 2",
+    "arm right shoulder twist 1",
+    "arm right shoulder twist 2",
+    "arm right deltoid adj",
+    "arm right shoulder pad",
+    "fur shoulder right a",
+    "arm right elbow front adj",
+    "arm right elbow back adj",
+    "fur shoulder right b",
+}
+
+fortnite_upperarm_bones_left = {
+    "arm left shoulder 2",
+    "arm left shoulder twist 1",
+    "arm left shoulder twist 2",
+    "arm left deltoid adj",
+    "arm left shoulder pad",
+    "fur shoulder left a",
+    "arm left elbow front adj",
+    "fur shoulder left b",
+}
+
+fortnite_clavicle_bones_right = {
+    "arm right shoulder 1",
+    "arm right pectoral adj",
+}
+
+fortnite_clavicle_bones_left = {
+    "arm left pectoral adj",
+    "arm left shoulder 1",
+}
+
+fortnite_hip_left = {
+    "leg left thigh",
+    "leg left thigh twist",
+    "jacket front left a",
+    "jacket front left b",
+    "jacket front left c",
+    "jacket back left 1a",
+    "jacket back left 1b",
+    "jacket back left 1c",
+    "jacket back left 2a",
+    "jacket back left 2b",
+    "jacket back left 2c",
+    "jacket left a",
+    "jacket left b",
+    "jacket left c",
+    "leg left butt adj",
+    "leg left thigh front adj",
+    "fur thigh left f",
+    "fur thigh left e",
+    "fur thigh left h",
+    "fur thigh left i",
+    "fur thigh left k",
+    "fur thigh left j",
+    "leg left knee back adj",
+    "leg left knee front adj",
+    "fur knee left a",
+}
+
+fortnite_hip_right = {
+    "leg right thigh",
+    "leg right thigh twist",
+    "jacket front right a",
+    "jacket front right b",
+    "jacket front right c",
+    "jacket back right 2a",
+    "jacket back right 2b",
+    "jacket back right 2c",
+    "jacket back right 1a",
+    "jacket back right 1b",
+    "jacket back right 1c",
+    "jacket right a",
+    "jacket right b",
+    "jacket right c",
+    "holster root",
+    "leg right butt adj",
+    "leg right thigh front adj",
+    "fur thigh right b",
+    "fur thigh right a",
+    "fur thigh right f",
+    "fur thigh right c",
+    "fur thigh right d",
+    "fur thigh right e",
+    "leg right knee back adj",
+    "leg right knee front adj",
+    "fur knee right a",
+}
+
+fortnite_calf_left = {
+    "leg left knee",
+    "leg left ankle twist",
+    "fur knee left e",
+    "leg left knee twist",
+    "fur knee left c",
+    "fur knee left b",
+    "fur knee left d",
+}
+
+fortnite_calf_right = {
+    "leg right knee",
+    "leg right ankle twist",
+    "fur knee right d",
+    "fur knee right e",
+    "leg right knee twist",
+    "fur knee right b",
+    "fur knee right c",
+}
+
+fortnite_ankle_left = {
+    "leg left ankle",
+    "fur ankle left a",
+    "fur ankle left b",
+    "fur ankle left d",
+    "fur ankle left c",
+}
+
+fortnite_ankle_right = {
+    "leg right ankle",
+    "fur ankle right c",
+    "fur ankle right b",
+    "fur ankle right d",
+    "fur ankle right a",
+}
+
 
 class EZPAINT_OT_ReweightModel(bpy.types.Operator):
+    bl_idname = "object.ezpaint_reweight"
+    bl_label = "ezPaint | Automatic Weightpaint"
+    bl_description = "Automatically convert model weights to be used in the Source Engine"
+    bl_options = {"REGISTER", "UNDO"}
 
-    bl_idname = 'object.ezpaint_reweight'
-    bl_label = 'ezPaint | Automatic Weightpaint'
-    bl_description = 'Automatically convert model weights to be used in the Source Engine'
-    bl_options = {'REGISTER', 'UNDO'}
-    
     def execute(self, context):
-        
-        selected_game = bpy.context.scene.ezpaint_opts.game_type        
-        
-        if selected_game == 'SWTOR':
-            print('SW:TOR MODE')
-            swtor = True
-            bungie_smalldef = False
-            jka = False
-            swjs = False
-            swbf = False
-            custom = False
-        if selected_game == 'DEST2':
-            print('DESTINY 2 MODE')
-            swtor = False
-            bungie_smalldef = True
-            jka = False
-            swjs = False
-            swbf = False
-            custom = False
-        if selected_game == 'JKA':
-            print('JEDI KNIGHT MODE')
-            swtor = False
-            bungie_smalldef = False
-            jka = True
-            swjs = False
-            swbf = False
-            custom = False
-        if selected_game == 'SWJS':
-            print('JEDI SERIES MODE')
-            swtor = False
-            bungie_smalldef = False
-            jka = False
-            swjs = True
-            swbf = False
-            custom = False
-        if selected_game == 'BFII':
-            print('BATTLEFRONT MODE')
-            swtor = False
-            bungie_smalldef = False
-            jka = False
-            swjs = False
-            swbf = True
-            custom = False
-        if selected_game == 'CUSTOM':
-            print('CUSTOM MODE')
-            swtor = False
-            bungie_smalldef = False
-            jka = False
-            swjs = False
-            swbf = False
-            custom = True
-        
+
+        selected_game = bpy.context.scene.ezpaint_opts.game_type
+
         act_obj = context.active_object
         v_groups = act_obj.vertex_groups
 
         def merge_groups(group_input, final_name, act_obj):
-        
+
             group_lookup = {g.index: g.name for g in v_groups}
             group_candidates = {n for n in group_lookup.values() if n in group_input}
-        
+
             # test whether all candidates are components of group_lookup
             if all(n in group_lookup.values() for n in group_candidates):
                 pass
-        
+
             # general tests
             if (
-                len(group_candidates)
-                and act_obj.type == "MESH"
-                and bpy.context.mode == "OBJECT"
+                    len(group_candidates)
+                    and act_obj.type == "MESH"
+                    and bpy.context.mode == "OBJECT"
             ):
-        
+
                 # iterate through the vertices and sum the weights per group
                 vertex_weights = {}
                 for vert in act_obj.data.vertices:
@@ -2771,32 +2625,34 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
                 for key in vertex_weights.keys():
                     if vertex_weights[key] > 1.0:
                         vertex_weights[key] = 1.0
-                #if (vertex_weights[key] < 0.3): vertex_weights[key] = 0.0
+                # if (vertex_weights[key] < 0.3): vertex_weights[key] = 0.0
                 # create new vertex group
                 vgroup = act_obj.vertex_groups.new(name=final_name)
-        
+
                 # combine values into the group
                 for key, value in vertex_weights.items():
-                    vgroup.add([key], value, "REPLACE")  #'ADD','SUBTRACT', 'REPLACE'
-        
-                #cleans up duplicates, adapted from https://blender.stackexchange.com/questions/134587/
+                    vgroup.add([key], value, "REPLACE")  # options are 'ADD','SUBTRACT', 'REPLACE'
+
+                # cleans up duplicates, adapted from https://blender.stackexchange.com/questions/134587/
                 vgs = [vg for vg in act_obj.vertex_groups if vg.name in group_input]
                 while vgs:
                     act_obj.vertex_groups.remove(vgs.pop())
-            
+
         def swtor_fixups(act_obj):
-            #Scaling factors may not be completely accurate
-            act_obj.scale=(330,330,330)
-            
+            # Scaling factors may not be completely accurate
+            act_obj.scale = (330, 330, 330)
+
             prefix = act_obj.name[:3]
-            prefixes = ('bms','bmf','bmn','bma','bfn','bfs')
-            
+            prefixes = ("bms", "bmf", "bmn", "bma", "bfn", "bfs")
+
             has_swtor_skels = bpy.context.scene.ezpaint_opts.has_swtor_skels
             if has_swtor_skels:
                 if prefix in prefixes:
                     skeleton = act_obj.modifiers.new(name="Armature", type="ARMATURE")
-                    skelobj = bpy.data.objects["bfb_armature"] #This is because the armature cannot be null post modifier application. It gets replaced immediately (unless bfb is the correct prefix)
-                    armature_name = prefix + '_armature'
+                    skelobj = bpy.data.objects[
+                        "bfb_armature"
+                    ]  # This is because the armature cannot be null post modifier application. It gets replaced immediately (unless bfb is the correct prefix)
+                    armature_name = prefix + "_armature"
                     skelobj = bpy.data.objects[armature_name]
                     skeleton.object = skelobj
                     skelobj.hide_set(False)
@@ -2811,10 +2667,10 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
 
             merge_groups(swtor_hip_left, "lhip", act_obj)
             merge_groups(swtor_hip_right, "rhip", act_obj)
-            
+
             fix_swtor_matnames = bpy.context.scene.ezpaint_opts.fix_swtor_matnames
-            
-            if fix_swtor_matnames: 
+
+            if fix_swtor_matnames:
                 # This prevents duplicate material names, which Source does not support
                 # It also guesses material names based on mesh names,
                 # since sometimes single mesh objects in SW:TOR have matching material names.
@@ -2823,7 +2679,6 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
                     new_mat = act_obj.active_material.copy()
                     act_obj.active_material = new_mat
                     new_mat.name = act_obj.name + "_v01"
-
 
         def jka_fixups(act_obj):
             act_obj.scale = (11, 11, 11)
@@ -2839,8 +2694,7 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             for m in act_obj.material_slots:
                 new_mat = m.material.copy()
                 m.material = new_mat
-                new_mat.name = new_mat.name[15:-8]
-
+                new_mat.name = new_mat.name[15:-8]  # Slices the file extension off
 
         def bungie_smalldef_fixups(act_obj):
             act_obj.scale = (38, 38, 38)
@@ -2849,54 +2703,63 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             merge_groups(bungie_hand_l_groups, "bg_handlgroup", act_obj)
             merge_groups(bungie_hand_r_groups, "bg_handrgroup", act_obj)
 
+        def swjs_fixups_helper(act_obj):
+            merge_groups(SWJS_fc_bones, "headgroup", act_obj)
+            
+            merge_groups(SWJS_NeckA_bones, "neckagroup", act_obj)
+            
+            merge_groups(SWJS_NeckB_bones, "neckbgroup", act_obj)
+            
+            merge_groups(SWJS_Pelvis_bones, "pelivsgroup", act_obj)
+            
+            merge_groups(SWJS_Spine2_bones, "spine2group", act_obj)
+            
+            merge_groups(SWJS_hand_bones_right, "rhand", act_obj)
+            merge_groups(SWJS_hand_bones_left, "lhand", act_obj)
+            
+            merge_groups(SWJS_forearm_bones_right, "rforearm", act_obj)
+            merge_groups(SWJS_forearm_bones_left, "lforearm", act_obj)
+            
+            merge_groups(SWJS_upperarm_bones_left, "lshoulder", act_obj)
+            merge_groups(SWJS_upperarm_bones_right, "rshoulder", act_obj)
+            
+            merge_groups(SWJS_clav_bones_left, "lclav", act_obj)
+            
+            merge_groups(SWJS_hip_left, "lhip", act_obj)
+            merge_groups(SWJS_hip_right, "rhip", act_obj)
+            
+            merge_groups(SWJS_calf_left, "lcalf", act_obj)
+            merge_groups(SWJS_calf_right, "rcalf", act_obj)
+            
+            merge_groups(SWJS_toe_left, "ltoe", act_obj)
+            merge_groups(SWJS_toe_right, "rtoe", act_obj)
+
 
         def swjs_fixups(act_obj):
-            #TODO: rewrite this to make more sense
+            # TODO: rewrite this to make more sense
             fbx_mode = bpy.context.scene.ezpaint_opts.fbx_mode
             if fbx_mode:
-                #Used only for models from common SWJS FBX archives
+                # Used only for models from common SWJS FBX archives
                 act_obj.scale = (0.38, 0.38, 0.38)
-                act_obj.rotation_euler[0] = math.radians(-0) # If you ask me why this works I have no idea this shit fucked
+                act_obj.rotation_euler[0] = math.radians(
+                    -0)  # If you ask me why this works I have no idea this shit fucked
+                swjs_fixups_helper(act_obj)
+
             else:
-                #Only use with direct rips from umodel!
+                # Only use with direct rips from umodel!
                 act_obj.scale = (38.5, 38.5, 38.5)
-
-                merge_groups(SWJS_fc_bones, "headgroup", act_obj)
-
-                merge_groups(SWJS_NeckA_bones, "neckagroup", act_obj)
-
-                merge_groups(SWJS_NeckB_bones, "neckbgroup", act_obj)
-
-                merge_groups(SWJS_Pelvis_bones, "pelivsgroup", act_obj)
-
-                merge_groups(SWJS_Spine2_bones, "spine2group", act_obj)
-
-                merge_groups(SWJS_hand_bones_right, "rhand", act_obj)
-                merge_groups(SWJS_hand_bones_left, "lhand", act_obj)
-
-                merge_groups(SWJS_forearm_bones_right, "rforearm", act_obj)
-                merge_groups(SWJS_forearm_bones_left, "lforearm", act_obj)
-
-                merge_groups(SWJS_upperarm_bones_left, "lshoulder", act_obj)
-                merge_groups(SWJS_upperarm_bones_right, "rshoulder", act_obj)
-
-                merge_groups(SWJS_hip_left, "lhip", act_obj)
-                merge_groups(SWJS_hip_right, "rhip", act_obj)
-
-                merge_groups(SWJS_calf_left, "lcalf", act_obj)
-                merge_groups(SWJS_calf_right, "rcalf", act_obj)
-
-                merge_groups(SWJS_toe_left, "ltoe", act_obj)
-                merge_groups(SWJS_toe_right, "rtoe", act_obj)
-
+                # Only use with direct rips from umodel!
+                swjs_fixups_helper(act_obj)
 
         def swbf_fixups(act_obj):
 
             # Only use with fbx models from common archives of SWBF models
 
             act_obj.scale = (40.5, 40.5, 40.5)
-            
-            act_obj.rotation_euler[0] = math.radians(90) #Only use with FBX models from common archives of SWBF models
+
+            act_obj.rotation_euler[0] = math.radians(90)
+
+            # Only use with FBX models from common archives of SWBF models
 
             merge_groups(swbf_fc_bones, "headgroup", act_obj)
 
@@ -2932,14 +2795,63 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
 
             merge_groups(swbf_toe_left, "ltoe", act_obj)
             merge_groups(swbf_toe_right, "rtoe", act_obj)
+        
+        def fortnite_fixups_helper(act_obj):
+        
+            merge_groups(fortnite_fc_bones, "headgroup", act_obj)
+            
+            merge_groups(fortnite_neck_bones, "neckgroup", act_obj)
+            
+            merge_groups(fortnite_spine4_bones, "spine4group", act_obj)
+            
+            merge_groups(fortnite_spine2_bones, "spine2group", act_obj)
+            
+            merge_groups(fortnite_spine_bones, "spinegroup", act_obj)
+            
+            merge_groups(fortnite_Pelvis_bones, "pelivsgroup", act_obj)
+            
+            merge_groups(fortnite_hand_bones_right, "rhand", act_obj)
+            merge_groups(fortnite_hand_bones_left, "lhand", act_obj)
+            
+            merge_groups(fortnite_forearm_bones_right, "rforearm", act_obj)
+            merge_groups(fortnite_forearm_bones_left, "lforearm", act_obj)
+            
+            merge_groups(fortnite_upperarm_bones_left, "lshoulder", act_obj)
+            merge_groups(fortnite_upperarm_bones_right, "rshoulder", act_obj)
+            
+            merge_groups(fortnite_clavicle_bones_left, "lclavicle", act_obj)
+            merge_groups(fortnite_clavicle_bones_right, "rclavicle", act_obj)
+            
+            merge_groups(fortnite_hip_left, "lhip", act_obj)
+            merge_groups(fortnite_hip_right, "rhip", act_obj)
+            
+            merge_groups(fortnite_calf_left, "lcalf", act_obj)
+            merge_groups(fortnite_calf_right, "rcalf", act_obj)
+            
+            merge_groups(fortnite_ankle_left, "lankle", act_obj)
+            merge_groups(fortnite_ankle_right, "rankle", act_obj)
+        
+        def fortnite_fixups(act_obj):
+
+            fortnite_female_armature = bpy.context.scene.ezpaint_opts.fortnite_female_armature
+
+            if fortnite_female_armature:
+                act_obj.scale = (44, 44, 44) # Female Fornite Models use a different armature compared to males requiring different scaling
+                fortnite_fixups_helper(act_obj)
+            else:
+                act_obj.scale = (42.5, 42.5, 42.5) # Female Fornite Models use a different armature compared to males requiring different scaling
+                fortnite_fixups_helper(act_obj)
+                
 
         def reweight(v_groups, name_list):
             for n in name_list:
                 if n[0] in v_groups:
                     v_groups[n[0]].name = n[1]
-        
+
         def custom_fixups(act_obj):
-            input_file = bpy.path.abspath(bpy.context.scene.ezpaint_opts.custom_v_filepath)
+            input_file = bpy.path.abspath(
+                bpy.context.scene.ezpaint_opts.custom_v_filepath
+            )
             groups_to_merge = []
             temp_group = []
 
@@ -2948,15 +2860,15 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             in_merge_area = False
             in_vertex_area = False
 
-            with open(input_file, 'r') as fin:
+            with open(input_file, "r") as fin:
                 lines = fin.readlines()
                 scale = float(lines[0])
                 for i in range(len(lines)):
                     line = lines[i]
-                    if line.startswith('{'):
+                    if line.startswith("{"):
                         in_merge_area = True
-                    if line.startswith('}'):
-                        temp_group.append(line[:-1])
+                    if line.startswith("}"):
+                        temp_group.append(line.strip())
                         temp_group.append(lines[i + 1])
                         in_merge_area = False
                     if in_merge_area:
@@ -2964,14 +2876,14 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
                     else:
                         groups_to_merge.append(temp_group)
                         temp_group = []
-                    if line.startswith('['):
+                    if line.startswith("["):
                         in_vertex_area = True
-                    if line.startswith(']'):
+                    if line.startswith("]"):
                         in_vertex_area = False
                     if in_vertex_area:
-                        if not '[' in line and not ']' in line:
-                            line = line[:-1]
-                            vertex_groups_replacement_list.append(line.split(':'))
+                        if "[" not in line and "]" not in line:
+                            line = line.strip()
+                            vertex_groups_replacement_list.append(line.split(":"))
 
             print(scale)
             print(vertex_groups_replacement_list)
@@ -2979,37 +2891,46 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
             raw_group = []
             for g in groups_to_merge:
                 if len(g):
-                    final_name = g[-1].strip()
+                    final_name = g[-1].strip()  # last element (minus newline)
                     for k in g:
-                        if '{' not in k and '}' not in k and final_name not in k:
+                        if "{" not in k and "}" not in k and final_name not in k:
                             raw_group.append(k.strip())
                     print(raw_group)
                     merge_groups(raw_group, final_name, act_obj)
                     print(final_name)
                 raw_group = []
 
-            act_obj.scale = (scale,scale,scale)
+            act_obj.scale = (scale, scale, scale)
             reweight(v_groups, vertex_groups_replacement_list)
 
-        if swtor == True:
+        if selected_game == "SWTOR":
+            print("SW:TOR MODE")
             swtor_fixups(act_obj)
             reweight(v_groups, swtor_name_list)
-        elif jka == True:
+        if selected_game == "DEST2":
+            print("DESTINY 2 MODE")
+            bungie_smalldef_fixups(act_obj)
+            # TODO: add checks for other bungie skeleton sizes
+            reweight(v_groups, bungie_sm_name_list)
+        if selected_game == "JKA":
+            print("JEDI KNIGHT MODE")
             jka_fixups(act_obj)
             reweight(v_groups, jka_name_list)
-        elif bungie_smalldef == True:
-            bungie_smalldef_fixups(act_obj)
-            #TODO: add checks for other bungie skeleton sizes
-            reweight(v_groups, bungie_sm_name_list)
-        elif swjs == True:
+        if selected_game == "SWJS":
+            print("JEDI SERIES MODE")
             swjs_fixups(act_obj)
             reweight(v_groups, swjs_name_list)
-        elif swbf == True:
+        if selected_game == "BFII":
+            print("BATTLEFRONT MODE")
             swbf_fixups(act_obj)
             reweight(v_groups, swbf_name_list)
-        elif custom:
+        if selected_game == "FORTNITE":
+            print("FORTNITE MODE")
+            fortnite_fixups(act_obj)
+            reweight(v_groups, fortnite_name_list)
+        if selected_game == "CUSTOM":
+            print("CUSTOM MODE")
             custom_fixups(act_obj)
-            #reweight(v_groups, custom_name_list)
 
         return {'FINISHED'}
 
@@ -3023,47 +2944,68 @@ class EZPAINT_OT_ReweightModel(bpy.types.Operator):
 
         layout.separator()
         col = layout.column()
-        col.label(text='INFO:', icon='ERROR')
-        col.label(text='  Processing can take several seconds!')
-        col.label(text='  ONLY the active object will be processed.')
+        col.label(text="INFO:", icon="ERROR")
+        col.label(text="  Processing can take several seconds!")
+        col.label(text="  ONLY the active object will be processed.")
+        col.label(text="  Results may vary if games have unique skeletons.")
+
 
 class EZPAINT_Settings(PropertyGroup):
-    games = [('SWTOR','SW:TOR','Star Wars: The Old Republic'),('JKA','JK:JA/II','Jedi Knight Series (Academy & II)'),
-    ('SWJS','SW:JS/JFO','Star Wars: Jedi Series (Survivor & Fallen Order)'),
-    ('BFII','BF/II','Star Wars Battlefront & Battlefront II'),
-    ("DEST2","Destiny 2","Destiny 2 - Only supports small characters for now"),
-    ('CUSTOM','Use Custom Settings','Load custom vertex groups and fixups from a file')]
-    
+    games = [
+        ("SWTOR", "SW:TOR", "Star Wars: The Old Republic"),
+        ("JKA", "JK:JA/II", "Jedi Knight Series (Academy & II)"),
+        ("SWJS", "SW:JS/JFO", "Star Wars: Jedi Series (Survivor & Fallen Order)"),
+        ("BFII", "BF/II", "Star Wars Battlefront & Battlefront II"),
+        ("DEST2", "Destiny 2", "Destiny 2 - Only supports small characters for now"),
+        (
+            "FORTNITE",
+            "Fortnite Battle Royale",
+            "Fortnite - Only limited support for characters due to most models having unique bones",
+        ),
+        (
+            "CUSTOM",
+            "Use Custom Settings",
+            "Load custom vertex groups and fixups from a file",
+        ),
+    ]
+
     fbx_mode: BoolProperty(
-        name='FBX Mode (only for SW:JS meshes)',
-        description='Use FBX mode/scaling for Jedi Series',
-        default=False
+        name="FBX Mode (Only use for SW:JFO/SW:JS FBX meshes)",
+        description="Only use when using FBX model from online archives. Leave unchecked if model is directly from umodel",
+        default=False,
     )
-    
+
+    fortnite_female_armature: BoolProperty(
+        name="Female Armature (Only use for female Fortnite meshes)",
+        description="Only use when using a female model from fortnite. Leave unchecked if model is male",
+        default=False,
+    )
+
     has_swtor_skels: BoolProperty(
-        name='Scene has SW:TOR skeletons',
-        description='Scene contains the proportioned skeletons to parent the repainted mesh to',
-        default=False
+        name="Scene has SW:TOR skeletons",
+        description="Scene contains the proportioned skeletons to parent the repainted mesh to",
+        default=False,
     )
-    
+
     fix_swtor_matnames: BoolProperty(
         name='Fix "default" materials & duplicates (SW:TOR)',
         description='ezPaint should attempt to fix material names that are duplicates or "default" (ONLY for SW:TOR)',
-        default=False
+        default=False,
     )
-    
+
     game_type: EnumProperty(
         items=games,
-        name='Game',
-        description='Game that the imported mesh is from',
-        default='SWTOR'
+        name="Game",
+        description="Game that the imported mesh is from",
+        default="SWTOR",
     )
-    
-    custom_v_filepath : StringProperty(
-            name = 'Custom Vertex Groups',
-            subtype = 'FILE_PATH',
-            description = 'File that defines a custom vertex group mapping'
+
+    custom_v_filepath: StringProperty(
+        name="Custom Vertex Groups",
+        subtype="FILE_PATH",
+        description="File that defines a custom vertex group mapping",
     )
+
 
 class EZPAINT_AddonPreferences(bpy.types.AddonPreferences):
     bl_idname = __name__
@@ -3073,55 +3015,57 @@ class EZPAINT_AddonPreferences(bpy.types.AddonPreferences):
         scene = context.scene
         ezp_opts = scene.ezpaint_opts
         col = layout.column()
-        col.prop(ezp_opts, 'fbx_mode')
-        col.prop(ezp_opts, 'has_swtor_skels')
-        col.prop(ezp_opts, 'fix_swtor_matnames')
-        col.prop(ezp_opts, 'game_type')
-        col.prop(ezp_opts, 'custom_v_filepath')
-        
+        col.prop(ezp_opts, "fbx_mode")
+        col.prop(ezp_opts, "fortnite_female_armature")
+        col.prop(ezp_opts, "has_swtor_skels")
+        col.prop(ezp_opts, "fix_swtor_matnames")
+        col.prop(ezp_opts, "game_type")
+        col.prop(ezp_opts, "custom_v_filepath")
+
+
 class EZP_PT_options_panel(bpy.types.Panel):
     bl_label = "ezPaint Options"
     bl_idname = "VIEW3D_PT_ezp_settings"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "ezPaint"
-    
+
     def draw(self, context):
         layout = self.layout
         scene = context.scene
         ezp_opts = scene.ezpaint_opts
-        
-        layout.operator(EZPAINT_OT_ReweightModel.bl_idname, icon = 'MESH_DATA')               
+
+        layout.operator(EZPAINT_OT_ReweightModel.bl_idname, icon="MESH_DATA")
         layout.separator()
-        
-        layout.prop(ezp_opts, 'fbx_mode')
-        layout.prop(ezp_opts, 'has_swtor_skels')
-        layout.prop(ezp_opts, 'fix_swtor_matnames')
-        layout.prop(ezp_opts, 'game_type')
-        layout.prop(ezp_opts, 'custom_v_filepath')
+
+        layout.prop(ezp_opts, "fbx_mode")
+        layout.prop(ezp_opts, "fortnite_female_armature")
+        layout.prop(ezp_opts, "has_swtor_skels")
+        layout.prop(ezp_opts, "fix_swtor_matnames")
+        layout.prop(ezp_opts, "game_type")
+        layout.prop(ezp_opts, "custom_v_filepath")
 
 
 classes = (
     EZPAINT_Settings,
     EZPAINT_AddonPreferences,
     EZPAINT_OT_ReweightModel,
-    EZP_PT_options_panel
+    EZP_PT_options_panel,
 )
 
-#def menu_func(self, context): #This just adds the menu
-#    self.layout.operator(EZPAINT_OT_ReweightModel.bl_idname)
 
 def register():
     for c in classes:
         bpy.utils.register_class(c)
-    #bpy.types.VIEW3D_MT_object.prepend(menu_func)  # Adds the new operator to an existing menu.
     bpy.types.Scene.ezpaint_opts = PointerProperty(type=EZPAINT_Settings)
+
 
 def unregister():
     for c in reversed(classes):
         bpy.utils.unregister_class(c)
     del bpy.types.Scene.ezpaint_opts
 
+
 # allows running add-on from builtin text editor
-if __name__ == '__main__':
+if __name__ == "__main__":
     register()
