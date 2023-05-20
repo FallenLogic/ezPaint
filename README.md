@@ -1,5 +1,5 @@
 # ezPaint
-A simple Blender add-on that allows for easy weightpainting of models from SW:TOR, Jedi Knight II, Jedi Academy, Star Wars Jedi Series, the Battlefront Series, and Destiny 2. You can also load custom settings for vertex groups and merges!
+A Blender add-on that allows for easy weightpainting of models from SW:TOR, Jedi Knight II, Jedi Academy, Star Wars Jedi Series, the Battlefront Series, and Destiny 2. You can also load custom settings for vertex groups and merges!
 After the automatic weightpaint, you will need to export as SMD, and compile the model using a proportioned skeleton.
 # How to Use:
 ## Step 1: Install as a Blender addon
