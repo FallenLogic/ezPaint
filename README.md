@@ -10,7 +10,7 @@ These are available under Addon Preferences
 ## Step 3: Activate addon from the sidebar 
 You may need to press 'N' or use the F3 menu to search for the operator
 ## Step 4: Parent the mesh to a proportioned armature and export it
-## Custom file demo:
+## Custom file example:
 For a custom vertex group mapping file,
 The first line must be a number (this is converted to a float or int), and it is the scaling factor applied to the active object when the custom file is applied. If the object is in the correct scale, simply make the first line the number 1.
 
