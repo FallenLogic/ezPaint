@@ -4,7 +4,7 @@ After the automatic weightpaint, you will need to export as SMD, and compile the
 # How to Use:
 ## Step 1: Install as a Blender addon
 Edit -> Preferences -> Add-ons -> Install, then locate the object_ezpaint.py file.
-\nAlternatively, place the file in the root of your Blender addons folder. 
+Alternatively, place the file in the root of your Blender addons folder. 
 ## Step 2: Change settings
 These are available under Addon Preferences
 ## Step 3: Activate addon from the sidebar 
