@@ -11,21 +11,21 @@ These are available under Addon Preferences
 You may need to press 'N' or use the F3 menu to search for the operator
 ## Step 4: Parent the mesh to a proportioned armature and export it
 
-## How to apply a new skeleton to the mesh after using ezPaint for use with supplied qc files.
-This is for SW:JFO/SW:JS, SW:BF/BF2 and fortnite models with a base zip file in the repository 
+## How to apply a new skeleton to the mesh after using ezPaint (for use with supplied qc files).
+This is for SW:JFO/SW:JS, SW:BF/BF2 and Fortnite models with a base zip file in the repository 
 ### Step 1:
 Delete the armature that the models are currently attached to.
 ### Step 2:
 Import the physics.smd from the corresponding folder.
 ### Step 3:
-Once the physics model has been imported into blender go to your models you used ezPaint on and switch the armature to physics models armature.
-Once done it will now move with that skeleton in pose mode. If it doesn't follow the above steps.
+Once the physics model has been imported into blender go to the models you used ezPaint on and switch the armature to physics models armature.
+Once done it will now move with that skeleton in pose mode. If it doesn't, follow the above steps.
 ### Step 4:
 Export models as smds and they are now ready to be used in a qc to make a player model.
 
 ## Custom file example:
 For a custom vertex group mapping file,
-The first line must be a number (this is converted to a float or int), and it is the scaling factor applied to the active object when the custom file is applied. If the object is in the correct scale, simply make the first line the number 1.
+The first line must be a number (this is converted to a float or int), and it is the scaling factor applied to the active object when the script is run. If the object is in the correct scale, simply make the first line the number 1.
 
 For vertex groups that should all be merged into one group, use curly braces (brackets) to contain a list of these groups, separated by newlines. The line following the closing bracket should be the name of the group to merge into.
 
