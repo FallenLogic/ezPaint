@@ -58,5 +58,7 @@ Note that the groups defined in the merge section can be used in the replace sec
 
 # Inspired by the Proportion Trick
 https://www.youtube.com/watch?v=n9lmxpjSv0I
-# Video about the old version (Explanation Starts at 0:39)
+# Current video tutorial:
+https://youtu.be/0YNODpnQffw
+# Video about the old version/mechanics (Explanation Starts at 0:39)
 https://youtu.be/Fc-asdOZXZM?list=PL7_W6qzKk7Yi_YImOM00yUi0Cu8iqavCj
