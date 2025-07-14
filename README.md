@@ -60,5 +60,3 @@ Note that the groups defined in the merge section can be used in the replace sec
 https://www.youtube.com/watch?v=n9lmxpjSv0I
 # Current video tutorial:
 https://youtu.be/0YNODpnQffw
-# Video about the old version/mechanics (Explanation Starts at 0:39)
-https://youtu.be/Fc-asdOZXZM?list=PL7_W6qzKk7Yi_YImOM00yUi0Cu8iqavCj
